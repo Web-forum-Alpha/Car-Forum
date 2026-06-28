@@ -1,5 +1,6 @@
 package com.example.carforum.services;
 
+import com.example.carforum.exceptions.EntityDuplicateException;
 import com.example.carforum.models.User;
 import com.example.carforum.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final String DUPLICATE_ERROR_MESSAGE = "User with %s %s already exists!";
     private final UserRepository userRepository;
 
     @Autowired
@@ -17,17 +19,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(){
+    public List<User> getAll() {
         return userRepository.getAll();
     }
 
     @Override
-    public User getById(int id){
+    public User getById(int id) {
         return userRepository.getById(id);
     }
 
     @Override
-    public User getByUsername(String userName){
+    public User getByUsername(String userName) {
         return userRepository.getByUsername(userName);
+    }
+
+    @Override
+    public void create(User user) {
+        String email = user.getEmail();
+        String username = user.getUsername();
+
+        if (userRepository.getByUsername(username) != null) {
+            throw new EntityDuplicateException(String.format(DUPLICATE_ERROR_MESSAGE, "username", username));
+        }
+
+        if (userRepository.getByEmail(email) != null) {
+            throw new EntityDuplicateException(String.format(DUPLICATE_ERROR_MESSAGE, "email", email));
+        }
+
+        userRepository.create(user);
     }
 }
