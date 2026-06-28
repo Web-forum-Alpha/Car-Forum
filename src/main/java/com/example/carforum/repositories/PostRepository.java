@@ -5,7 +5,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PostRepository extends JpaRepository<Post, Integer> {
+public interface PostRepository{
 
-    List<Post> findTop10ByOrderByIdDesc(); // 10 most recent posts
+
+    Post getPostById(int id);
+
+    List<Post> getAllPosts();
+
+    List<Post> getTenMostRecentPosts();
+
+    void createPost(Post post);
+    void updatePost(Post post);
+    void deletePost(Post post);
+
+
+
 }
