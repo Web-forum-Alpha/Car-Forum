@@ -32,6 +32,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByUsername(String userName){
-        return entityManager.find(User.class,userName);
+        return entityManager
+                .createQuery("from User where userName = : username",User.class)
+                .setParameter("username",userName)
+                .getSingleResult();
     }
 }
