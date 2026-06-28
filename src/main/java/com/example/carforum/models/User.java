@@ -1,6 +1,7 @@
 package com.example.carforum.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -17,12 +18,14 @@ public class User {
     private String password;
 
     @Column(name = "first_name")
+    @Size(min = 4, max = 32)
     private String firstName;
 
     @Column(name = "last_name")
+    @Size(min = 4, max = 32)
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "phone_number")
