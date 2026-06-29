@@ -3,6 +3,7 @@ package com.example.carforum.helpers;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.PostDto;
 import com.example.carforum.models.User;
+import com.example.carforum.models.UserDto;
 import com.example.carforum.services.PostService;
 import com.example.carforum.services.UserService;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class ModelMapper {
         this.postService = postService;
         this.userService = userService;
     }
-
+    //POST DTO
     public Post fromDtoCreate(PostDto postDto){
 
         Post post = new Post();
@@ -39,4 +40,20 @@ public class ModelMapper {
 
         return post;
     }
+
+    //USER DTO
+    public User fromDtoCreate(UserDto userDto){
+
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAdmin(false);
+
+        return user;
+    }
+
 }

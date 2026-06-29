@@ -1,5 +1,6 @@
 package com.example.carforum.controllers;
 
+import com.example.carforum.helpers.ModelMapper;
 import com.example.carforum.models.User;
 import com.example.carforum.models.UserDto;
 import com.example.carforum.services.UserService;
@@ -13,10 +14,12 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserRestController {
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserRestController(UserService userService) {
+    public UserRestController(UserService userService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping
@@ -37,14 +40,7 @@ public class UserRestController {
 
     @PostMapping("/register")
     public void create(@Valid @RequestBody UserDto userDto){
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setAdmin(false);
+        User user = modelMapper.fromDtoCreate(userDto);
         userService.create(user);
     }
 
