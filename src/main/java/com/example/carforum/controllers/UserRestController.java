@@ -60,5 +60,9 @@ public class UserRestController {
         session.setAttribute("currentUser", user);
     }
 
+    @PostMapping("/logout")
+    public void logout(HttpSession session) {
+        session.invalidate();
+    }
 
 }
