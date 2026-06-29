@@ -10,4 +10,6 @@ public interface UserService {
     User getById(int id);
 
     User getByUsername(String userName);
+
+    void create(User user);
 }
