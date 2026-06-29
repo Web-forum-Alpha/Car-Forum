@@ -19,14 +19,14 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getPostById(int id) {
+    public Post getById(int id) {
 
         return entityManager
                 .find(Post.class, id);
     }
 
     @Override
-    public List<Post> getAllPosts() {
+    public List<Post> getAll() {
         return entityManager
                 .createQuery("FROM Post ", Post.class)
                 .getResultList();
@@ -34,21 +34,21 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Transactional
     @Override
-    public void createPost(Post post) {
+    public void create(Post post) {
 
         entityManager.persist(post);
     }
 
     @Transactional
     @Override
-    public void updatePost(Post post) {
+    public void update(Post post) {
 
         entityManager.merge(post);
     }
 
     @Transactional
     @Override
-    public void deletePost(Post post) {
+    public void delete(Post post) {
         entityManager.remove(post);
 
     }
