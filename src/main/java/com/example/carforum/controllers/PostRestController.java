@@ -1,11 +1,10 @@
 package com.example.carforum.controllers;
 
 import com.example.carforum.exceptions.EntityNotFoundException;
+import com.example.carforum.helpers.ModelMapper;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.PostDto;
-import com.example.carforum.models.User;
 import com.example.carforum.services.PostService;
-import com.example.carforum.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,12 +18,12 @@ import java.util.List;
 public class PostRestController {
 
     private final PostService postService;
-    private final UserService userService;
+    private final ModelMapper mapper;
 
     @Autowired
-    public PostRestController(PostService postService, UserService userService){
+    public PostRestController(PostService postService, ModelMapper mapper){
         this.postService = postService;
-        this.userService = userService;
+        this.mapper = mapper;
     }
 
     @GetMapping()
@@ -46,13 +45,7 @@ public class PostRestController {
     @PostMapping()
     public void create(@Valid @RequestBody PostDto postDto){
 
-        Post post = new Post();
-        User user = userService.getById(postDto.getUser_id());
-
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
-        post.setLikes(0);
-        post.setUser(user);
+        Post post = mapper.fromDtoCreate(postDto);
 
         postService.create(post);
 
@@ -62,9 +55,7 @@ public class PostRestController {
     public void update(@PathVariable int id, @Valid @RequestBody PostDto postDto){
 
         try {
-            Post post = postService.getById(id);
-            post.setTitle(postDto.getTitle());
-            post.setContent(postDto.getContent());
+            Post post = mapper.fromDtoUpdate(id, postDto);
 
             postService.update(post);
 
