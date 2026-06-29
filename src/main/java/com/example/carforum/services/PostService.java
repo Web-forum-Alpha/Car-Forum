@@ -1,11 +1,10 @@
-package com.example.carforum.repositories;
+package com.example.carforum.services;
 
 import com.example.carforum.models.Post;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PostRepository{
+public interface PostService {
 
 
     Post getById(int id);
@@ -16,8 +15,5 @@ public interface PostRepository{
 
     void create(Post post);
     void update(Post post);
-    void delete(Post post);
-
-
-
+    void deleteById(int id);
 }
