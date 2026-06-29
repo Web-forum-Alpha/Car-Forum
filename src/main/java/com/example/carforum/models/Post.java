@@ -41,7 +41,7 @@ public class Post {
         return id;
     }
 
-    private void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,7 +49,7 @@ public class Post {
         return title;
     }
 
-    private void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -57,7 +57,7 @@ public class Post {
         return content;
     }
 
-    private void setContent(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
@@ -65,7 +65,7 @@ public class Post {
         return likes;
     }
 
-    private void setLikes(int likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 
@@ -73,7 +73,7 @@ public class Post {
         return user;
     }
 
-    private void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 }

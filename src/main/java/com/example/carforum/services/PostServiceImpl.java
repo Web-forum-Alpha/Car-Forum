@@ -13,7 +13,7 @@ public class PostServiceImpl implements PostService{
 
 
     private static final String NOT_FOUND_MESSAGE = "%s with %d id was not found!";
-    PostRepository repository;
+    private final PostRepository repository;
 
     @Autowired
     public PostServiceImpl(PostRepository repository){
