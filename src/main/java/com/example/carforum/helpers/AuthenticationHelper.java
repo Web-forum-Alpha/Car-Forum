@@ -34,13 +34,17 @@ public class AuthenticationHelper {
         return userFromDb;
     }
 
-    public boolean userIsLoggedIn(HttpSession session) {
+    public boolean isLoggedIn(HttpSession session) {
         return session.getAttribute("currentUser") != null;
     }
 
-    public boolean userIsAdmin(HttpSession session) {
+    public boolean isAdmin(HttpSession session) {
         User user = getCurrentUser(session);
         return user.isAdmin();
+    }
+
+    public boolean isLoggedInNonAdmin(HttpSession session){
+        return isLoggedIn(session) && !isAdmin(session);
     }
 
 }

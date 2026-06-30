@@ -22,6 +22,8 @@ public class UserRestController {
     private static final String ALREADY_LOGGED_IN_ERROR_MESSAGE = "You are already logged in!";
     private static final String ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE = "You are already logged in, to register another user, logout first!";
     private static final String ALREADY_LOGGED_OUT_ERROR_MESSAGE = "You are already logged out!";
+    private static final String USERID_NOT_FOUND = "User with id %d is not found!";
+    private static final String USERNAME_NOT_FOUND = "User with username %s is not found!";
     public static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
 
     private final UserService userService;
@@ -37,7 +39,7 @@ public class UserRestController {
 
     @GetMapping
     public List<User> getAll(HttpSession session) {
-        if (authenticationHelper.userIsLoggedIn(session) && !authenticationHelper.userIsAdmin(session)) {
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
         }
         return userService.getAll();
@@ -45,21 +47,41 @@ public class UserRestController {
 
     @GetMapping("/{userId}")
     public User getById(@PathVariable int userId, HttpSession session) {
-        if (authenticationHelper.userIsLoggedIn(session) && !authenticationHelper.userIsAdmin(session)) {
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
         }
-        return userService.getById(userId);
+        User user = userService.getById(userId);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERID_NOT_FOUND,userId));
+        }
+        return user;
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteById(@PathVariable int userId, HttpSession session){
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
+        }
+        User user = userService.getById(userId);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERID_NOT_FOUND,userId));
+        }
+        userService.delete(user);
     }
 
     //Adding for testing purposes
     @GetMapping("/search/{username}")
     public User getByUsername(@PathVariable String username) {
-        return userService.getByUsername(username);
+        User user = userService.getByUsername(username);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERNAME_NOT_FOUND,username));
+        }
+        return user;
     }
 
     @PostMapping("/register")
     public void create(@Valid @RequestBody UserDto userDto, HttpSession session) {
-        if (authenticationHelper.userIsLoggedIn(session) && !authenticationHelper.userIsAdmin(session)) {
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE);
         }
         User user = modelMapper.fromDtoCreate(userDto);
@@ -68,7 +90,7 @@ public class UserRestController {
 
     @PostMapping("/login")
     public void login(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
-        if (authenticationHelper.userIsLoggedIn(session)) {
+        if (authenticationHelper.isLoggedIn(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_IN_ERROR_MESSAGE);
         }
         String username = loginDto.getUsername();
@@ -82,7 +104,7 @@ public class UserRestController {
 
     @PostMapping("/logout")
     public void logout(HttpSession session) {
-        if (!authenticationHelper.userIsLoggedIn(session)) {
+        if (!authenticationHelper.isLoggedIn(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_OUT_ERROR_MESSAGE);
         }
         session.invalidate();

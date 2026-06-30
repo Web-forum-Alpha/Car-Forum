@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
     public void create(User user) {
         String email = user.getEmail();
         String username = user.getUsername();
-
         if (userRepository.getByUsername(username) != null) {
             throw new EntityDuplicateException(String.format(DUPLICATE_ERROR_MESSAGE, "username", username));
         }
@@ -45,7 +44,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.getByEmail(email) != null) {
             throw new EntityDuplicateException(String.format(DUPLICATE_ERROR_MESSAGE, "email", email));
         }
-
         userRepository.create(user);
+    }
+
+    @Override
+    public void delete(User user){
+        userRepository.delete(user);
     }
 }
