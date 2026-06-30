@@ -1,5 +1,6 @@
 package com.example.carforum.controllers;
 
+import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.helpers.ModelMapper;
 import com.example.carforum.models.LoginDto;
 import com.example.carforum.models.User;
@@ -17,40 +18,81 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
-    private final String LOGIN_CREDENTIALS_ERROR_MESSAGE = "Invalid username or password!";
+    private static final String LOGIN_CREDENTIALS_ERROR_MESSAGE = "Invalid username or password!";
+    private static final String ALREADY_LOGGED_IN_ERROR_MESSAGE = "You are already logged in!";
+    private static final String ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE = "You are already logged in, to register another user, logout first!";
+    private static final String ALREADY_LOGGED_OUT_ERROR_MESSAGE = "You are already logged out!";
+    private static final String USERID_NOT_FOUND = "User with id %d is not found!";
+    private static final String USERNAME_NOT_FOUND = "User with username %s is not found!";
+    public static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
+
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public UserRestController(UserService userService, ModelMapper modelMapper) {
+    public UserRestController(UserService userService, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.authenticationHelper = authenticationHelper;
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<User> getAll(HttpSession session) {
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
+        }
         return userService.getAll();
     }
 
     @GetMapping("/{userId}")
-    public User getById(@PathVariable int userId) {
-        return userService.getById(userId);
+    public User getById(@PathVariable int userId, HttpSession session) {
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
+        }
+        User user = userService.getById(userId);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERID_NOT_FOUND,userId));
+        }
+        return user;
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteById(@PathVariable int userId, HttpSession session){
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
+        }
+        User user = userService.getById(userId);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERID_NOT_FOUND,userId));
+        }
+        userService.delete(user);
     }
 
     //Adding for testing purposes
     @GetMapping("/search/{username}")
     public User getByUsername(@PathVariable String username) {
-        return userService.getByUsername(username);
+        User user = userService.getByUsername(username);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERNAME_NOT_FOUND,username));
+        }
+        return user;
     }
 
     @PostMapping("/register")
-    public void create(@Valid @RequestBody UserDto userDto) {
+    public void create(@Valid @RequestBody UserDto userDto, HttpSession session) {
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE);
+        }
         User user = modelMapper.fromDtoCreate(userDto);
         userService.create(user);
     }
 
     @PostMapping("/login")
     public void login(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
+        if (authenticationHelper.isLoggedIn(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_IN_ERROR_MESSAGE);
+        }
         String username = loginDto.getUsername();
         String password = loginDto.getPassword();
         User user = userService.getByUsername(username);
@@ -62,6 +104,9 @@ public class UserRestController {
 
     @PostMapping("/logout")
     public void logout(HttpSession session) {
+        if (!authenticationHelper.isLoggedIn(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_OUT_ERROR_MESSAGE);
+        }
         session.invalidate();
     }
 

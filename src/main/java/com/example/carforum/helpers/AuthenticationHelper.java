@@ -19,19 +19,32 @@ public class AuthenticationHelper {
         this.userService = userService;
     }
 
-    public User getCurrentUser(HttpSession session){
+    public User getCurrentUser(HttpSession session) {
         User userFromSession = (User) session.getAttribute("currentUser");
-        if(userFromSession == null){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,USER_NOT_LOGGED_IN_MESSAGE);
+        if (userFromSession == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_NOT_LOGGED_IN_MESSAGE);
         }
         String password = userFromSession.getPassword();
         String username = userFromSession.getUsername();
         User userFromDb = userService.getByUsername(username);
 
-        if(userFromDb == null || !userFromDb.getPassword().equals(password)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,INVALID_AUTHENTICATION_ERROR);
+        if (userFromDb == null || !userFromDb.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, INVALID_AUTHENTICATION_ERROR);
         }
-
         return userFromDb;
     }
+
+    public boolean isLoggedIn(HttpSession session) {
+        return session.getAttribute("currentUser") != null;
+    }
+
+    public boolean isAdmin(HttpSession session) {
+        User user = getCurrentUser(session);
+        return user.isAdmin();
+    }
+
+    public boolean isLoggedInNonAdmin(HttpSession session){
+        return isLoggedIn(session) && !isAdmin(session);
+    }
+
 }

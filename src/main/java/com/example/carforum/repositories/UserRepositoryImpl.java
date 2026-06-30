@@ -61,4 +61,10 @@ public class UserRepositoryImpl implements UserRepository {
     public void create(User user) {
         entityManager.persist(user);
     }
+
+    @Transactional
+    @Override
+    public void delete(User user){
+        entityManager.remove(user);
+    }
 }
