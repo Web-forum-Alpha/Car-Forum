@@ -3,6 +3,8 @@ package com.example.carforum.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -112,4 +114,5 @@ public class User {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
+
 }
