@@ -22,14 +22,13 @@ public class ModelMapper {
         this.commentService = commentService;
     }
     //POST DTO
-    public Post fromDtoCreate(PostDto postDto){
+    public Post fromDtoCreate(PostDto postDto, User creator){
 
         Post post = new Post();
-        User user = userService.getById(postDto.getUser_id());
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setLikes(DEFAULT_LIKES_WHEN_POST_CREATED);
-        post.setUser(user);
+        post.setUser(creator);
 
         return post;
     }

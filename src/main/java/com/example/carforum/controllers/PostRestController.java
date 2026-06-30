@@ -49,8 +49,8 @@ public class PostRestController {
 
     @PostMapping()
     public void create(@Valid @RequestBody PostDto postDto, HttpSession session) {
-        authenticationHelper.getCurrentUser(session);
-        Post post = mapper.fromDtoCreate(postDto);
+        User user = authenticationHelper.getCurrentUser(session);
+        Post post = mapper.fromDtoCreate(postDto, user);
         postService.create(post);
     }
 

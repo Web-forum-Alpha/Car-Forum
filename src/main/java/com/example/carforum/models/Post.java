@@ -1,5 +1,8 @@
 package com.example.carforum.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -25,7 +28,13 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
+
+    @JsonProperty("username")
+    public String getUsername(){
+        return user != null ? user.getUsername() : null;
+    }
 
     public Post(){}
 
