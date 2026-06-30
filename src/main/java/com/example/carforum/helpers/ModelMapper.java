@@ -1,9 +1,7 @@
 package com.example.carforum.helpers;
 
-import com.example.carforum.models.Post;
-import com.example.carforum.models.PostDto;
-import com.example.carforum.models.User;
-import com.example.carforum.models.UserDto;
+import com.example.carforum.models.*;
+import com.example.carforum.services.CommentService;
 import com.example.carforum.services.PostService;
 import com.example.carforum.services.UserService;
 import org.springframework.stereotype.Component;
@@ -14,10 +12,14 @@ public class ModelMapper {
     private static final int DEFAULT_LIKES_WHEN_POST_CREATED = 0;
     private final PostService postService;
     private final UserService userService;
+    private final CommentService commentService;
 
-    public ModelMapper(PostService postService, UserService userService){
+    public ModelMapper(PostService postService,
+                       UserService userService,
+                       CommentService commentService){
         this.postService = postService;
         this.userService = userService;
+        this.commentService = commentService;
     }
     //POST DTO
     public Post fromDtoCreate(PostDto postDto){
@@ -54,6 +56,29 @@ public class ModelMapper {
         user.setAdmin(false);
 
         return user;
+    }
+
+
+    //COMMENT DTO
+    public Comment fromDtoCreate(CommentDto commentDto){
+
+        Comment comment = new Comment();
+        User user = userService.getById(commentDto.getUserId());
+        Post post = postService.getById(commentDto.getPostId());
+
+        comment.setContent(commentDto.getContent());
+        comment.setUser(user);
+        comment.setPost(post);
+
+        return comment;
+    }
+
+    public Comment fromDtoUpdate(int id, CommentDto commentDto){
+
+        Comment comment = commentService.getById(id);
+        comment.setContent(commentDto.getContent());
+
+        return comment;
     }
 
 }
