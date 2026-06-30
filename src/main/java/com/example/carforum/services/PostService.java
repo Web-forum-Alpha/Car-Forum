@@ -1,11 +1,11 @@
 package com.example.carforum.services;
 
 import com.example.carforum.models.Post;
+import com.example.carforum.models.User;
 
 import java.util.List;
 
 public interface PostService {
-
 
     Post getById(int id);
 
@@ -14,6 +14,6 @@ public interface PostService {
     List<Post> getTenMostRecentPosts();
 
     void create(Post post);
-    void update(Post post);
-    void deleteById(int id);
+    void update(Post post, User user);
+    void deleteById(int id, User user);
 }
