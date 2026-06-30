@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final String DUPLICATE_ERROR_MESSAGE = "User with %s %s already exists!";
+    private static final String DUPLICATE_ERROR_MESSAGE = "User with %s %s already exists!";
     private final UserRepository userRepository;
 
     @Autowired
