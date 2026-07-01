@@ -1,6 +1,6 @@
 package com.example.carforum.models;
 
-public class UserDto {
+public class UserCreateDto {
     private String username;
     private String password;
     private String firstName;

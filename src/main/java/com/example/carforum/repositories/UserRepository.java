@@ -13,9 +13,12 @@ public interface UserRepository {
     User getByUsername(String userName);
 
     User getByEmail(String email);
-
+    @Transactional
     void create(User user);
 
     @Transactional
     void delete(User user);
+
+    @Transactional
+    void update(User user);
 }

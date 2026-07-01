@@ -1,6 +1,8 @@
 package com.example.carforum.services;
 
 import com.example.carforum.models.User;
+import com.example.carforum.models.UserUpdateDto;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -14,4 +16,5 @@ public interface UserService {
     void create(User user);
 
     void delete(User user);
+    void update(User userToUpdate);
 }

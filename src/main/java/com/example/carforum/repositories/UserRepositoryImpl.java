@@ -64,7 +64,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Transactional
     @Override
-    public void delete(User user){
+    public void delete(User user) {
         entityManager.remove(user);
+    }
+
+    @Transactional
+    @Override
+    public void update(User user) {
+        entityManager.merge(user);
     }
 }
