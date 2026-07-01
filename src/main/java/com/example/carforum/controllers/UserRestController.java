@@ -6,14 +6,17 @@ import com.example.carforum.models.LoginDto;
 import com.example.carforum.models.User;
 import com.example.carforum.models.UserCreateDto;
 import com.example.carforum.models.UserUpdateDto;
+import com.example.carforum.services.SupabaseStorageService;
 import com.example.carforum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,12 +32,14 @@ public class UserRestController {
     public static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
 
     private final UserService userService;
+    private final SupabaseStorageService supabaseStorageService;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public UserRestController(UserService userService, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
+    public UserRestController(UserService userService, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, SupabaseStorageService supabaseStorageService) {
         this.userService = userService;
+        this.supabaseStorageService = supabaseStorageService;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
     }
@@ -71,6 +76,23 @@ public class UserRestController {
         userService.update(userToUpdate);
 
         session.setAttribute("currentUser", userToUpdate);
+    }
+
+    @PostMapping("/{userId}/picture")
+    public void uploadPicture(@PathVariable int userId, @RequestParam("picture") MultipartFile picture, HttpSession session) throws IOException {
+
+        User currentUser = authenticationHelper.getCurrentUser(session);
+
+        if (currentUser.getId() != userId) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        String picturePath = supabaseStorageService.uploadFile(picture, userId);
+
+        User user = userService.getById(userId);
+        user.setProfilePicturePath(picturePath);
+
+        userService.update(user);
     }
 
     @DeleteMapping("/{userId}")
