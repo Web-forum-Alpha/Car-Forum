@@ -4,7 +4,8 @@ import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.helpers.ModelMapper;
 import com.example.carforum.models.LoginDto;
 import com.example.carforum.models.User;
-import com.example.carforum.models.UserDto;
+import com.example.carforum.models.UserCreateDto;
+import com.example.carforum.models.UserUpdateDto;
 import com.example.carforum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -25,6 +26,7 @@ public class UserRestController {
     private static final String USERID_NOT_FOUND = "User with id %d is not found!";
     private static final String USERNAME_NOT_FOUND = "User with username %s is not found!";
     public static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
+    public static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
 
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -57,6 +59,20 @@ public class UserRestController {
         return user;
     }
 
+    @PutMapping("/{userId}")
+    public void updateById(@PathVariable int userId, @Valid @RequestBody UserUpdateDto userUpdateDto, HttpSession session){
+        User user = authenticationHelper.getCurrentUser(session);
+        if(userId != user.getId()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_UPDATE_ERROR_MESSAGE);
+        }
+        User userToUpdate = userService.getById(userId);
+        userToUpdate = modelMapper.fromDtoUpdate(userToUpdate, userUpdateDto);
+
+        userService.update(userToUpdate);
+
+        session.setAttribute("currentUser", userToUpdate);
+    }
+
     @DeleteMapping("/{userId}")
     public void deleteById(@PathVariable int userId, HttpSession session){
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
@@ -80,11 +96,11 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public void create(@Valid @RequestBody UserDto userDto, HttpSession session) {
+    public void create(@Valid @RequestBody UserCreateDto userCreateDto, HttpSession session) {
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE);
         }
-        User user = modelMapper.fromDtoCreate(userDto);
+        User user = modelMapper.fromDtoCreate(userCreateDto);
         userService.create(user);
     }
 

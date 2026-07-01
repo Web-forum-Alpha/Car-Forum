@@ -43,16 +43,27 @@ public class ModelMapper {
     }
 
     //USER DTO
-    public User fromDtoCreate(UserDto userDto){
+    public User fromDtoCreate(UserCreateDto userCreateDto){
 
         User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setUsername(userCreateDto.getUsername());
+        user.setPassword(userCreateDto.getPassword());
+        user.setFirstName(userCreateDto.getFirstName());
+        user.setLastName(userCreateDto.getLastName());
+        user.setEmail(userCreateDto.getEmail());
+        user.setPhoneNumber(userCreateDto.getPhoneNumber());
         user.setAdmin(false);
+
+        return user;
+    }
+
+    public User fromDtoUpdate(User user, UserUpdateDto userUpdateDto){
+
+        user.setPassword(userUpdateDto.getPassword());
+        user.setFirstName(userUpdateDto.getFirstName());
+        user.setLastName(userUpdateDto.getLastName());
+        user.setEmail(userUpdateDto.getEmail());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
 
         return user;
     }
