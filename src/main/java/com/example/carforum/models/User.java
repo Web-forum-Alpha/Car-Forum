@@ -13,6 +13,9 @@ public class User {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "profile_picture_path")
+    private String profilePicturePath;
+
     @Column(name = "username")
     private String username;
 
@@ -115,4 +118,11 @@ public class User {
         isAdmin = admin;
     }
 
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
+    }
 }
