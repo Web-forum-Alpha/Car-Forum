@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 public class PostRestController {
-
+    private static final String USER_BLOCKED_MESSAGE = "Your user is blocked by the admin, you cannot create/update/delete posts.";
     private final PostService postService;
     private final ModelMapper mapper;
     private final AuthenticationHelper authenticationHelper;
@@ -50,6 +50,11 @@ public class PostRestController {
     @PostMapping()
     public void create(@Valid @RequestBody PostDto postDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
+
+        if (authenticationHelper.isBlocked(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, USER_BLOCKED_MESSAGE);
+        }
+
         Post post = mapper.fromDtoCreate(postDto, user);
         postService.create(post);
     }
@@ -57,6 +62,11 @@ public class PostRestController {
     @PutMapping("/{id}")
     public void update(@PathVariable int id, @Valid @RequestBody PostDto postDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
+
+        if (authenticationHelper.isBlocked(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, USER_BLOCKED_MESSAGE);
+        }
+
         Post post = mapper.fromDtoUpdate(id, postDto);
         try {
             postService.update(post, user);
@@ -68,8 +78,13 @@ public class PostRestController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
+
+        if (authenticationHelper.isBlocked(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, USER_BLOCKED_MESSAGE);
+        }
+
         try {
-            postService.deleteById(id,user);
+            postService.deleteById(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

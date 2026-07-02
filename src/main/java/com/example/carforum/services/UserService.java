@@ -16,5 +16,8 @@ public interface UserService {
     void create(User user);
 
     void delete(User user);
+
     void update(User userToUpdate);
+
+    void setBlock(User userToUpdate, User currentUser, boolean blockOrUnblock);
 }
