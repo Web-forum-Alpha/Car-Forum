@@ -43,6 +43,11 @@ public class AuthenticationHelper {
         return user.isAdmin();
     }
 
+    public boolean isBlocked(HttpSession session){
+        User user = getCurrentUser(session);
+        return user.isBlocked();
+    }
+
     public boolean isLoggedInNonAdmin(HttpSession session){
         return isLoggedIn(session) && !isAdmin(session);
     }
