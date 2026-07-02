@@ -6,7 +6,7 @@ import com.example.carforum.models.LoginDto;
 import com.example.carforum.models.User;
 import com.example.carforum.models.UserCreateDto;
 import com.example.carforum.models.UserUpdateDto;
-import com.example.carforum.services.SupabaseStorageService;
+import com.example.carforum.services.SupabaseStorageServiceImpl;
 import com.example.carforum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -32,12 +32,12 @@ public class UserRestController {
     private static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
 
     private final UserService userService;
-    private final SupabaseStorageService supabaseStorageService;
+    private final SupabaseStorageServiceImpl supabaseStorageService;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public UserRestController(UserService userService, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, SupabaseStorageService supabaseStorageService) {
+    public UserRestController(UserService userService, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, SupabaseStorageServiceImpl supabaseStorageService) {
         this.userService = userService;
         this.supabaseStorageService = supabaseStorageService;
         this.modelMapper = modelMapper;
