@@ -6,7 +6,6 @@ import com.example.carforum.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private static final String DUPLICATE_ERROR_MESSAGE = "User with %s %s already exists!";
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -57,6 +57,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User userToUpdate) {
+        userRepository.update(userToUpdate);
+    }
+
+    @Override
+    public void setBlock(User userToUpdate, User currentUser, boolean blockOrUnblock){
+        if(!currentUser.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not privileged to block/unblock users.");
+        }
+
+        userToUpdate.setBlocked(blockOrUnblock);
+
         userRepository.update(userToUpdate);
     }
 }

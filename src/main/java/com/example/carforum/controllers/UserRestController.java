@@ -28,8 +28,8 @@ public class UserRestController {
     private static final String ALREADY_LOGGED_OUT_ERROR_MESSAGE = "You are already logged out!";
     private static final String USERID_NOT_FOUND = "User with id %d is not found!";
     private static final String USERNAME_NOT_FOUND = "User with username %s is not found!";
-    public static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
-    public static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
+    private static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
+    private static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
 
     private final UserService userService;
     private final SupabaseStorageService supabaseStorageService;
@@ -58,24 +58,53 @@ public class UserRestController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
         }
         User user = userService.getById(userId);
-        if(user == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERID_NOT_FOUND,userId));
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERID_NOT_FOUND, userId));
         }
         return user;
     }
 
     @PutMapping("/{userId}")
-    public void updateById(@PathVariable int userId, @Valid @RequestBody UserUpdateDto userUpdateDto, HttpSession session){
+    public void updateById(@PathVariable int userId, @Valid @RequestBody UserUpdateDto userUpdateDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
-        if(userId != user.getId()){
+        if (userId != user.getId()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_UPDATE_ERROR_MESSAGE);
         }
         User userToUpdate = userService.getById(userId);
+
+        if (userToUpdate == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERID_NOT_FOUND, userId));
+        }
+
         userToUpdate = modelMapper.fromDtoUpdate(userToUpdate, userUpdateDto);
 
         userService.update(userToUpdate);
 
         session.setAttribute("currentUser", userToUpdate);
+    }
+
+    @PutMapping("/{userId}/block")
+    public void blockUser(@PathVariable int userId, HttpSession session) {
+        User user = authenticationHelper.getCurrentUser(session);
+        User userToUpdate = userService.getById(userId);
+
+        if (userToUpdate == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERID_NOT_FOUND, userId));
+        }
+
+        userService.setBlock(userToUpdate, user, true);
+    }
+
+    @PutMapping("/{userId}/unblock")
+    public void unblockUser(@PathVariable int userId, HttpSession session) {
+        User user = authenticationHelper.getCurrentUser(session);
+        User userToUpdate = userService.getById(userId);
+
+        if (userToUpdate == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERID_NOT_FOUND, userId));
+        }
+
+        userService.setBlock(userToUpdate, user, false);
     }
 
     @PostMapping("/{userId}/picture")
@@ -90,20 +119,27 @@ public class UserRestController {
         String picturePath = supabaseStorageService.uploadFile(picture, userId);
 
         User user = userService.getById(userId);
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERID_NOT_FOUND, userId));
+        }
+
         user.setProfilePicturePath(picturePath);
 
         userService.update(user);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteById(@PathVariable int userId, HttpSession session){
+    public void deleteById(@PathVariable int userId, HttpSession session) {
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
         }
         User user = userService.getById(userId);
-        if(user == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERID_NOT_FOUND,userId));
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERID_NOT_FOUND, userId));
         }
+
         userService.delete(user);
     }
 
@@ -111,9 +147,11 @@ public class UserRestController {
     @GetMapping("/search/{username}")
     public User getByUsername(@PathVariable String username) {
         User user = userService.getByUsername(username);
-        if(user == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format(USERNAME_NOT_FOUND,username));
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERNAME_NOT_FOUND, username));
         }
+
         return user;
     }
 
@@ -134,9 +172,11 @@ public class UserRestController {
         String username = loginDto.getUsername();
         String password = loginDto.getPassword();
         User user = userService.getByUsername(username);
+
         if (user == null || !user.getPassword().equals(password)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, LOGIN_CREDENTIALS_ERROR_MESSAGE);
         }
+
         session.setAttribute("currentUser", user);
     }
 
