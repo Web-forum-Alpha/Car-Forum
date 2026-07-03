@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface PostLikesRepository {
 
-    PostLikes getLikeByUser(Post post, User user);
+    PostLikes findIfPostLikedByUser(Post post, User user);
 
-    List<PostLikes> getAllLikesPerPost(Post post);
+    List<PostLikes> getAllLikesPerPostId(int id);
 
     void create(PostLikes postLikes);
     void delete(PostLikes postLikes);
