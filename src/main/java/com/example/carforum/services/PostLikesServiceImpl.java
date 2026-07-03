@@ -60,8 +60,10 @@ public class PostLikesServiceImpl implements PostLikesService{
     @Override
     public void delete(PostLikes like) {
 
-        if (postLikesRepository.findIfPostLikedByUser(like.getPost(), like.getUser()) != null){
-            postLikesRepository.delete(like);
+        PostLikes likeCheck = postLikesRepository.findIfPostLikedByUser(like.getPost(), like.getUser());
+
+        if ( likeCheck != null){
+            postLikesRepository.delete(likeCheck);
         }else {
             throw new EntityNotFoundException(UNLIKE_ERROR_MESSAGE);
         }
