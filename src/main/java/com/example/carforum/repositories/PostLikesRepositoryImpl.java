@@ -21,9 +21,8 @@ public class PostLikesRepositoryImpl implements PostLikesRepository{
     }
 
 
-
     @Override
-    public PostLikes getLikeByUser(Post post, User user) {
+    public PostLikes findIfPostLikedByUser(Post post, User user) {
         List<PostLikes> result = entityManager
                 .createQuery(
                         "FROM PostLikes pl " +
@@ -35,12 +34,14 @@ public class PostLikesRepositoryImpl implements PostLikesRepository{
         return result.isEmpty() ? null : result.get(0);
     }
 
+
+
     @Override
-    public List<PostLikes> getAllLikesPerPost(Post post) {
+    public List<PostLikes> getAllLikesPerPostId(int id) {
         return   entityManager
                 .createQuery(
                         "FROM PostLikes pl WHERE pl.post.id =:id", PostLikes.class
-                ).setParameter("id", post.getId())
+                ).setParameter("id", id)
                 .getResultList();
 
 
