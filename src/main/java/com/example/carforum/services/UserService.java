@@ -13,7 +13,7 @@ public interface UserService {
 
     User getByUsername(String userName);
 
-    User search(String username, String email, String firstName);
+    List<User> search(String username, String email, String firstName);
 
     void create(User user);
 

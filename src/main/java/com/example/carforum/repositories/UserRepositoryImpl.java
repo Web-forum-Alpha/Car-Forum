@@ -57,18 +57,22 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User search(String username, String email, String firstName) {
-        return entityManager
-                .createQuery("""
-                    from User
-                    where (:username is null or lower(username) like lower(concat('%', :username, '%')))
-                      and (:email is null or lower(email) like lower(concat('%', :email, '%')))
-                      and (:firstName is null or lower(firstName) like lower(concat('%', :firstName, '%')))
+    public List<User> search(String username, String email, String firstName) {
+        try {
+            return entityManager
+                    .createQuery("""
+                    from User u
+                    where (:username is null or u.username like :username)
+                      and (:email is null or u.email like :email)
+                      and (:firstName is null or u.firstName like :firstName)
                     """, User.class)
-                .setParameter("username", username)
-                .setParameter("email", email)
-                .setParameter("firstName", firstName)
-                .getSingleResult();
+                    .setParameter("username", username == null ? null : "%" + username + "%")
+                    .setParameter("email", email == null ? null : "%" + email + "%")
+                    .setParameter("firstName", firstName == null ? null : "%" + firstName + "%")
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 

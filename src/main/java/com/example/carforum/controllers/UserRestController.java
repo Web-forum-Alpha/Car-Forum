@@ -28,6 +28,7 @@ public class UserRestController {
     private static final String ALREADY_LOGGED_OUT_ERROR_MESSAGE = "You are already logged out!";
     private static final String USERID_NOT_FOUND = "User with id %d is not found!";
     private static final String USERNAME_NOT_FOUND = "User with username %s is not found!";
+    private static final String USER_NOT_FOUND = "User not found!";
     private static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
     private static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
 
@@ -143,25 +144,27 @@ public class UserRestController {
         userService.delete(user);
     }
 
-    //Adding for testing purposes
-    @GetMapping("/search/{username}")
-    public User getByUsername(@RequestParam(required = false) String username,
-                              @RequestParam(required = false) String email,
-                              @RequestParam(required = false) String firstName) {
+    @GetMapping("/search")
+    public List<User> getByUsername(@RequestParam(required = false) String username,
+                                    @RequestParam(required = false) String email,
+                                    @RequestParam(required = false) String firstname, HttpSession session) {
 
-        if(username == null && email == null && firstName == null){
+        if (authenticationHelper.isLoggedInNonAdmin(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
+        }
+
+        if (username == null && email == null && firstname == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one search parameter must be provided.");
         }
 
-        User user = userService.search(username,email,firstName);
+        List<User> users = userService.search(username, email, firstname);
 
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERNAME_NOT_FOUND, username));
+        if (users.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
         }
 
-        return user;
+        return users;
     }
-
 
 
     @PostMapping("/register")
