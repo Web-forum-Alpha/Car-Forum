@@ -57,7 +57,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> search(String username, String email, String firstName) {
+    public User search(String username, String email, String firstName) {
         return entityManager
                 .createQuery("""
                     from User
@@ -68,7 +68,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .setParameter("username", username)
                 .setParameter("email", email)
                 .setParameter("firstName", firstName)
-                .getResultList();
+                .getSingleResult();
     }
 
 
