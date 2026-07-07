@@ -37,6 +37,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> search(String username, String email, String firstName) {
+        return userRepository.search(username, email, firstName);
+    }
+
+    @Override
     public void create(User user) {
         String email = user.getEmail();
         String username = user.getUsername();
@@ -61,8 +66,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setBlock(User userToUpdate, User currentUser, boolean blockOrUnblock){
-        if(!currentUser.isAdmin()){
+    public void setBlock(User userToUpdate, User currentUser, boolean blockOrUnblock) {
+        if (!currentUser.isAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not privileged to block/unblock users.");
         }
 

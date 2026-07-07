@@ -13,6 +13,9 @@ public interface UserRepository {
     User getByUsername(String userName);
 
     User getByEmail(String email);
+
+    List<User> search(String username, String email, String firstName);
+
     @Transactional
     void create(User user);
 
