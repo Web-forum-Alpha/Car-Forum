@@ -145,8 +145,15 @@ public class UserRestController {
 
     //Adding for testing purposes
     @GetMapping("/search/{username}")
-    public User getByUsername(@PathVariable String username) {
-        User user = userService.getByUsername(username);
+    public User getByUsername(@RequestParam(required = false) String username,
+                              @RequestParam(required = false) String email,
+                              @RequestParam(required = false) String firstName) {
+
+        if(username == null && email == null && firstName == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one search parameter must be provided.");
+        }
+
+        User user = userService.search(username,email,firstName);
 
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(USERNAME_NOT_FOUND, username));
@@ -154,6 +161,8 @@ public class UserRestController {
 
         return user;
     }
+
+
 
     @PostMapping("/register")
     public void create(@Valid @RequestBody UserCreateDto userCreateDto, HttpSession session) {
