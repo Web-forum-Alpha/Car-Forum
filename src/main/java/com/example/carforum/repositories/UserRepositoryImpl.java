@@ -56,6 +56,22 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Override
+    public List<User> search(String username, String email, String firstName) {
+        return entityManager
+                .createQuery("""
+                    from User
+                    where (:username is null or lower(username) like lower(concat('%', :username, '%')))
+                      and (:email is null or lower(email) like lower(concat('%', :email, '%')))
+                      and (:firstName is null or lower(firstName) like lower(concat('%', :firstName, '%')))
+                    """, User.class)
+                .setParameter("username", username)
+                .setParameter("email", email)
+                .setParameter("firstName", firstName)
+                .getResultList();
+    }
+
+
     @Transactional
     @Override
     public void create(User user) {
