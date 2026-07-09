@@ -1,11 +1,14 @@
 package com.example.carforum.controllers;
 
+import com.example.carforum.exceptions.EntityDuplicateException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.helpers.ModelMapper;
+import com.example.carforum.models.Like;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.PostDto;
 import com.example.carforum.models.User;
+import com.example.carforum.services.LikeService;
 import com.example.carforum.services.PostService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,12 +24,14 @@ import java.util.List;
 public class PostRestController {
     private static final String USER_BLOCKED_MESSAGE = "Your user is blocked by the admin, you cannot create/update/delete posts.";
     private final PostService postService;
+    private final LikeService likeService;
     private final ModelMapper mapper;
     private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public PostRestController(PostService postService, ModelMapper mapper, AuthenticationHelper authenticationHelper) {
+    public PostRestController(PostService postService, ModelMapper mapper, AuthenticationHelper authenticationHelper, LikeService likeService) {
         this.postService = postService;
+        this.likeService = likeService;
         this.mapper = mapper;
         this.authenticationHelper = authenticationHelper;
     }
@@ -88,6 +93,40 @@ public class PostRestController {
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @GetMapping("/{postId}/likes")
+    public int getPostLikesCount(@PathVariable int postId){
+        try {
+            return postService.getLikesCount(postId);
+        }catch (EntityNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{postId}/likes")
+    public void crateLike(@PathVariable int postId, HttpSession session){
+
+        try{
+            User user = authenticationHelper.getCurrentUser(session);
+            Like like = mapper.fromDtoCreate(postId, user);
+            likeService.create(like);
+        }catch (EntityDuplicateException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+
+    }
+    @DeleteMapping("/{postId}/likes")
+    public void deleteLike(@PathVariable int postId, HttpSession session){
+
+        try{
+            User user = authenticationHelper.getCurrentUser(session);
+            Like like = mapper.fromDtoDelete(postId, user);
+            likeService.delete(like);
+        }catch (EntityNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
     }
 
 
