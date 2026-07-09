@@ -13,6 +13,8 @@ public interface PostService {
 
     List<Post> getTenMostRecentPosts();
 
+    int getLikesCount(int postId);
+
     void create(Post post);
     void update(Post post, User user);
     void deleteById(int id, User user);

@@ -91,20 +91,20 @@ public class ModelMapper {
         return comment;
     }
 
-    //POSTLIKES DTO
+    //LIKE DTO
 
-    public PostLikes fromDtoCreate(int postId, User user){
+    public Like fromDtoCreate(int postId, User user){
 
-        PostLikes like = new PostLikes();
+        Like like = new Like();
         like.setPost(postService.getById(postId));
         like.setUser(user);
 
         return like;
     }
 
-    public PostLikes fromDtoDelete(int postId, User user){
+    public Like fromDtoDelete(int postId, User user){
 
-        PostLikes like = new PostLikes();
+        Like like = new Like();
 
         like.setPost(postService.getById(postId));
         like.setUser(user);

@@ -46,6 +46,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public int getLikesCount(int postId) {
+
+        return getById(postId).getLikesList().size();
+    }
+
+    @Override
     public void create(Post post) {
         repository.create(post);
     }

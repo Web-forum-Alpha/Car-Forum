@@ -7,18 +7,18 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "post_likes")
-public class PostLikes {
+public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;
@@ -29,7 +29,7 @@ public class PostLikes {
     public String getUsername(){return user != null ? user.getUsername() : null;}
 
 
-    public PostLikes(){
+    public Like(){
 
     }
 
