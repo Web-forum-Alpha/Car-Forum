@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Post</title>
+</head>
+<body>
+<div class="body-content">
+    <div class="post-header">
+        <h1 th:text="${postDetails.post.title}">Title</h1>
+        <a th:href="@{/posts}" th:text="${postDetails.post.user.username}">Creator</a>
+    </div>
+    <div class="post-content">
+        <p th:text="${postDetails.post.content}">Content</p>
+    </div>
+    <div class="post-likes" th:text="'likes: ' + ${postDetails.likes} ">Likes</div>
+    <div>
+        <h2>Comments</h2>
+    </div>
+    <div class="post-comments" th:each="comment : ${postDetails.comments}">
+        <a th:href="@{/posts}" th:text="${comment.user.username}">Commentator</a>
+        <p th:text="${comment.content}">Content</p>
+    </div>
+    <p th:if="${postDetails.comments.isEmpty()}">No comments yet!</p>
+
+</div>
+
+</body>
+</html>
