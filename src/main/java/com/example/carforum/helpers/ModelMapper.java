@@ -6,6 +6,8 @@ import com.example.carforum.services.PostService;
 import com.example.carforum.services.UserService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ModelMapper {
 
@@ -110,6 +112,17 @@ public class ModelMapper {
         like.setUser(user);
 
         return like;
+    }
+
+    //POSTDETAILSDTO
+
+    public PostDetailsDto toDto(Post post, List<Comment> comments, int likes){
+        PostDetailsDto dto = new PostDetailsDto();
+        dto.setPost(post);
+        dto.setComments(comments);
+        dto.setLikes(likes);
+
+        return dto;
     }
 
 }

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posts</title>
+</head>
+<body>
+<div class="body-content">
+    <div th:if="${posts.isEmpty()}">
+        <h2> No Posts</h2>
+    </div>
+    <div th:unless="${posts.isEmpty()}">
+        <h2>Posts</h2>
+    </div>
+
+    <div class="row" th:each="post :${posts}">
+        <div class="post-general-info">
+            <a th:href="@{/posts}" th:text="${post.user.getUsername()}"> Author</a>
+            <br>
+            <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
+            <br><br>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
