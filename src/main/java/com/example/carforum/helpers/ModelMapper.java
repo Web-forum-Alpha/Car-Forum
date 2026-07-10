@@ -44,6 +44,15 @@ public class ModelMapper {
         return post;
     }
 
+    public PostDto toDtoUpdate(int id, Post post){
+
+        PostDto dto = new PostDto();
+        dto.setTitle(post.getTitle());
+        dto.setContent(post.getContent());
+
+        return dto;
+    }
+
     //USER DTO
     public User fromDtoCreate(UserCreateDto userCreateDto){
 
