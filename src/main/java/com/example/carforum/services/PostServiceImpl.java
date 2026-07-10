@@ -1,5 +1,6 @@
 package com.example.carforum.services;
 
+import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.User;
@@ -58,9 +59,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void update(Post post, User user) {
-        if (post.getUser().getId() != user.getId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, OWNER_ERROR_MESSAGE);
-        }
+        checkModifyPermission(post, user);
+
+        //TODO ?
+//        if (post.getUser().getId() != user.getId()) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, OWNER_ERROR_MESSAGE);
+//        }
         repository.update(post);
     }
 
@@ -71,5 +75,16 @@ public class PostServiceImpl implements PostService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, OWNER_ERROR_MESSAGE);
         }
         repository.delete(post);
+    }
+
+
+    //TODO ASK Aleks
+    private void checkModifyPermission(Post post, User user){;
+
+        if (!(post.getUser().getUsername().equals(user.getUsername()) || user.isAdmin())){
+
+            throw new AuthorizationException("Only admin or Post owner can modify!");
+        }
+
     }
 }
