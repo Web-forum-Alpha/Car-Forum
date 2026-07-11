@@ -20,21 +20,6 @@ public class LikeRepositoryImpl implements LikeRepository {
         this.entityManager = entityManager;
     }
 
-
-    @Override
-    public Like findIfPostLikedByUser(Post post, User user) {
-        List<Like> result = entityManager
-                .createQuery(
-                        "FROM Like pl " +
-                                "WHERE pl.post.id =:pId AND pl.user.id =:uId", Like.class
-                ).setParameter("pId", post.getId())
-                .setParameter("uId", user.getId())
-                .getResultList();
-
-        return result.isEmpty() ? null : result.get(0);
-    }
-
-
     @Transactional
     @Override
     public void create(Like like) {
@@ -46,6 +31,36 @@ public class LikeRepositoryImpl implements LikeRepository {
     @Override
     public void delete(Like like) {
 
-        entityManager.remove(like);
+        Like manageLike = entityManager.createQuery("SELECT l FROM Like l WHERE l.post.id =:postId AND l.user.id=:userId", Like.class)
+                .setParameter("postId", like.getPost().getId())
+                .setParameter("userId", like.getUser().getId())
+                .getSingleResult();
+
+        entityManager.remove(manageLike);
+    }
+
+    @Override
+    public boolean existsByPostAndUser(int postId, int userId) {
+
+        Long count = entityManager
+                .createQuery(
+                        "SELECT COUNT(l) " +
+                                "FROM Like l " +
+                                "WHERE l.post.id = :postId AND l.user.id = :userId", Long.class
+                ).setParameter("postId", postId)
+                .setParameter("userId", userId)
+                .getSingleResult();
+
+        return count > 0;
+    }
+
+    @Override
+    public int countByPost(int postId) {
+
+        List<Like> likes = entityManager.createQuery("FROM Like l WHERE l.post.id =:postId", Like.class)
+                .setParameter("postId", postId)
+                .getResultList();
+
+        return likes.size();
     }
 }

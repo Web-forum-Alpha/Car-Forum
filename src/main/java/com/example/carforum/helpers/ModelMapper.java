@@ -44,6 +44,8 @@ public class ModelMapper {
         return post;
     }
 
+
+    //TODO check if method works
     public PostDto toDtoUpdate(int id, Post post){
 
         PostDto dto = new PostDto();
@@ -123,15 +125,26 @@ public class ModelMapper {
         return like;
     }
 
-    //POSTDETAILSDTO
+    //PostDETAILSDto
 
-    public PostDetailsDto toDto(Post post, List<Comment> comments, int likes){
+    public PostDetailsDto toDto(Post post, List<Comment> comments, int likes, boolean isLiked){
         PostDetailsDto dto = new PostDetailsDto();
         dto.setPost(post);
         dto.setComments(comments);
         dto.setLikes(likes);
+        dto.setLiked(isLiked);
 
         return dto;
+    }
+
+    //LikeDto
+
+    public Like fromDto(int postId, int userId){
+        Like like = new Like();
+        like.setPost(postService.getById(postId));
+        like.setUser(userService.getById(userId));
+
+        return like;
     }
 
 }

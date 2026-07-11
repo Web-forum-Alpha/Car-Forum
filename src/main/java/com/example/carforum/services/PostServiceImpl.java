@@ -2,6 +2,7 @@ package com.example.carforum.services;
 
 import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
+import com.example.carforum.models.Like;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.User;
 import com.example.carforum.repositories.PostRepository;
@@ -46,11 +47,6 @@ public class PostServiceImpl implements PostService {
         return repository.getTenMostRecentPosts();
     }
 
-    @Override
-    public int getLikesCount(int postId) {
-
-        return getById(postId).getLikesList().size();
-    }
 
     @Override
     public void create(Post post) {
