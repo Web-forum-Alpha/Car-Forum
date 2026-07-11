@@ -4,13 +4,10 @@ import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.helpers.ModelMapper;
-import com.example.carforum.models.Post;
-import com.example.carforum.models.PostDetailsDto;
-import com.example.carforum.models.PostDto;
-import com.example.carforum.models.User;
+import com.example.carforum.models.*;
 import com.example.carforum.services.CommentService;
+import com.example.carforum.services.LikeService;
 import com.example.carforum.services.PostService;
-import com.example.carforum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +24,19 @@ public class PostMvcController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final LikeService likeService;
     private final ModelMapper mapper;
     private final AuthenticationHelper authenticationHelper;
 
     @Autowired
     public PostMvcController(PostService postService,
                              CommentService commentService,
+                             LikeService likeService,
                              ModelMapper mapper,
                              AuthenticationHelper authenticationHelper){
         this.postService = postService;
         this.commentService = commentService;
+        this.likeService = likeService;
         this.mapper = mapper;
         this.authenticationHelper = authenticationHelper;
     }
@@ -49,7 +49,15 @@ public class PostMvcController {
     }
 
     @GetMapping("/{postId}")
-    public String getPostById(@PathVariable int postId, Model model){
+    public String getPostById(@PathVariable int postId, Model model, HttpSession session){
+
+        User user;
+       try{
+           user = authenticationHelper.getCurrentUser(session);
+       }catch (ResponseStatusException e){
+
+           return "redirect:/auth/login";
+       }
 
         try{
             Post post = postService.getById(postId);
@@ -57,7 +65,8 @@ public class PostMvcController {
             PostDetailsDto dto = mapper.toDto(
                     post,
                     commentService.getByPostId(postId),
-                    postService.getLikesCount(postId)
+                    likeService.getLikesCount(postId),
+                    likeService.isLikedByUser(postId,user.getId())
             );
 
             model.addAttribute("postDetails", dto);
@@ -189,6 +198,32 @@ public class PostMvcController {
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
         }
+
+    }
+
+    @PostMapping("/{postId}/like")
+    public String likeAction(@PathVariable int postId, Model model , HttpSession session){
+
+        User user;
+        try{
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+
+            return "redirect:/auth/login";
+        }
+
+        try{
+            Like like = mapper.fromDto(postId, user.getId());
+
+            likeService.interactionWithLikeButton(like);
+            return "redirect:/posts/{postId}";
+
+        }catch (EntityNotFoundException e){
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+
 
     }
 

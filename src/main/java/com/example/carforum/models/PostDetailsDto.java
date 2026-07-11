@@ -7,6 +7,7 @@ public class PostDetailsDto {
     private Post post;
     private List<Comment> comments;
     private int likes;
+    private boolean isLiked;
 
     public PostDetailsDto() {
     }
@@ -34,5 +35,13 @@ public class PostDetailsDto {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

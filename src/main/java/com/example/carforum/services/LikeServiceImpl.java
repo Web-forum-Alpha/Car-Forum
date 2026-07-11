@@ -14,12 +14,9 @@ public class LikeServiceImpl implements LikeService {
     public static final String POST_ALREADY_LIKED_MESSAGE = "Post already liked!";
     public static final String UNLIKE_ERROR_MESSAGE = "Like was not found for this Post and User!";
     private final LikeRepository likeRepository;
-    private final PostRepository postRepository;
 
-    public LikeServiceImpl(LikeRepository likeRepository,
-                           PostRepository postRepository){
+    public LikeServiceImpl(LikeRepository likeRepository){
         this.likeRepository = likeRepository;
-        this.postRepository = postRepository;
     }
 
 
@@ -27,18 +24,31 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public void interactionWithLikeButton(Like postLike) {
 
-        Like likeCheck = likeRepository.findIfPostLikedByUser(postLike.getPost(), postLike.getUser());
-
-        if (likeCheck == null) {
+        if (!isLikedByUser(postLike.getPost().getId(), postLike.getUser().getId())) {
             create(postLike);
+
         } else {
-            delete(likeCheck);
+            delete(postLike);
+
         }
     }
 
     @Override
+    public boolean isLikedByUser(int postId, int userId) {
+
+        return likeRepository.existsByPostAndUser(postId, userId);
+
+    }
+
+    @Override
+    public int getLikesCount(int postId) {
+
+        return likeRepository.countByPost(postId);
+    }
+
+    @Override
     public void create(Like like) {
-        if (likeRepository.findIfPostLikedByUser(like.getPost(), like.getUser()) == null){
+        if (!isLikedByUser(like.getPost().getId(), like.getUser().getId())){
             likeRepository.create(like);
         }else {
             throw new EntityDuplicateException(POST_ALREADY_LIKED_MESSAGE);
@@ -48,10 +58,8 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public void delete(Like like) {
 
-        Like likeCheck = likeRepository.findIfPostLikedByUser(like.getPost(), like.getUser());
-
-        if ( likeCheck != null){
-            likeRepository.delete(likeCheck);
+        if (isLikedByUser(like.getPost().getId(), like.getUser().getId())){
+            likeRepository.delete(like);
         }else {
             throw new EntityNotFoundException(UNLIKE_ERROR_MESSAGE);
         }

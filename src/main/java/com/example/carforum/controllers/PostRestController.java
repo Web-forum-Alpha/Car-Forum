@@ -98,7 +98,7 @@ public class PostRestController {
     @GetMapping("/{postId}/likes")
     public int getPostLikesCount(@PathVariable int postId){
         try {
-            return postService.getLikesCount(postId);
+            return likeService.getLikesCount(postId);
         }catch (EntityNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

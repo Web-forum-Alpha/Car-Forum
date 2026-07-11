@@ -6,9 +6,10 @@ import com.example.carforum.models.User;
 
 public interface LikeRepository {
 
-    Like findIfPostLikedByUser(Post post, User user);
-
-
     void create(Like like);
     void delete(Like like);
+
+    boolean existsByPostAndUser(int postId, int userId);
+    int countByPost(int postId);
+
 }

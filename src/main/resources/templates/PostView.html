@@ -14,7 +14,17 @@
     <div class="post-content">
         <p th:text="${postDetails.post.content}">Content</p>
     </div>
-    <div class="post-likes" th:text="'likes: ' + ${postDetails.likes} ">Likes</div>
+    <div class="post-likes">
+        <form action="#" th:action="@{/posts/{postId}/like(postId=${postDetails.post.id})}" method="post">
+            <button type="submit"
+            class="like-btn"
+            th:classappend="${postDetails.liked} ? 'liked' : 'not-liked'"
+            th:text="${postDetails.liked} ? 'Liked' : 'Like'">
+                Like
+            </button>
+        </form>
+        <span th:text="${postDetails.likes} + ' likes'">0 likes</span>
+    </div>
     <div>
         <h2>Comments</h2>
     </div>
