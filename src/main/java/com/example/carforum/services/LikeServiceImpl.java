@@ -4,13 +4,11 @@ import com.example.carforum.exceptions.EntityDuplicateException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.models.Like;
 import com.example.carforum.repositories.LikeRepository;
-import com.example.carforum.repositories.PostRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LikeServiceImpl implements LikeService {
 
-    public static final String NON_FOUND_MESSAGE = "%s with %s %s not found!";
     public static final String POST_ALREADY_LIKED_MESSAGE = "Post already liked!";
     public static final String UNLIKE_ERROR_MESSAGE = "Like was not found for this Post and User!";
     private final LikeRepository likeRepository;

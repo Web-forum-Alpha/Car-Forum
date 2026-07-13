@@ -1,8 +1,6 @@
 package com.example.carforum.repositories;
 
-import com.example.carforum.models.Post;
 import com.example.carforum.models.Like;
-import com.example.carforum.models.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

@@ -5,10 +5,7 @@ public class PostDto {
     private String title;
     private String content;
 
-
-    public PostDto(){
-
-    }
+    public PostDto(){}
 
     public String getTitle() {
         return title;
