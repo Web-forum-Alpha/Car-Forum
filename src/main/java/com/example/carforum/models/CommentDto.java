@@ -1,7 +1,12 @@
 package com.example.carforum.models;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class CommentDto {
 
+    @NotNull
+    @Size(max = 5000)
     private String content;
 
     private int userId;
