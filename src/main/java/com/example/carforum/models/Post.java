@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
-
-
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -24,9 +21,6 @@ public class Post {
     @Size(min = 32, max = 8192)
     private String content;
 
-    @Column(name = "likes")
-    private int likes; //DELETE
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
@@ -37,16 +31,12 @@ public class Post {
         return user != null ? user.getUsername() : null;
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likesList;
-
     public Post(){}
 
-    public Post(int id, String title, String content, int likes, User user) {
+    public Post(int id, String title, String content, User user) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.likes = likes;
         this.user = user;
     }
 
@@ -74,27 +64,11 @@ public class Post {
         this.content = content;
     }
 
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public List<Like> getLikesList() {
-        return likesList;
-    }
-
-    public void setLikesList(List<Like> likesList) {
-        this.likesList = likesList;
     }
 }

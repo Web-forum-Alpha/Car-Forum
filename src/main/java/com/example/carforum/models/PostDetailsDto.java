@@ -9,9 +9,7 @@ public class PostDetailsDto {
     private int likes;
     private boolean isLiked;
 
-    public PostDetailsDto() {
-    }
-
+    public PostDetailsDto() {}
 
     public Post getPost() {
         return post;
