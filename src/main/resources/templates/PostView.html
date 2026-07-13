@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
     <title>Post</title>
 </head>
 <body>
@@ -28,12 +29,22 @@
     <div>
         <h2>Comments</h2>
     </div>
+    <div class="comment-section">
+    <div class="add-comment">
+        <form action="#" th:action="@{/posts/{postId}/comment(postId=${postDetails.post.id})}"
+              th:object="${commentDto}" method="post">
+            <textarea th:field="*{content}" placeholder="Write a comment..." required></textarea>
+            <button type="submit">Post comment</button>
+        </form>
+    </div>
     <div class="post-comments" th:each="comment : ${postDetails.comments}">
         <a th:href="@{/posts}" th:text="${comment.user.username}">Commentator</a>
         <p th:text="${comment.content}">Content</p>
     </div>
     <p th:if="${postDetails.comments.isEmpty()}">No comments yet!</p>
 
+
+    </div>
 </div>
 
 </body>

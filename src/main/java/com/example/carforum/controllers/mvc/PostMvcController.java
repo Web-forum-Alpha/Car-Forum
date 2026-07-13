@@ -70,6 +70,8 @@ public class PostMvcController {
             );
 
             model.addAttribute("postDetails", dto);
+            model.addAttribute("commentDto", new CommentDto());
+
 
             return "PostView";
         }catch (EntityNotFoundException e){
@@ -223,7 +225,30 @@ public class PostMvcController {
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
         }
+    }
 
+    @PostMapping("/{postId}/comment")
+    public String createComment(@PathVariable int postId, HttpSession session, @ModelAttribute CommentDto commentDto, Model model){
+
+        User user;
+        try{
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+            return "redirect:/auth/login";
+        }
+
+        try{
+            commentDto.setPostId(postId);
+            commentDto.setUserId(user.getId());
+            Comment comment = mapper.fromDtoCreate(commentDto);
+            commentService.create(comment);
+            return "redirect:/posts/{postId}";
+
+        }catch (EntityNotFoundException e){
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
 
     }
 
