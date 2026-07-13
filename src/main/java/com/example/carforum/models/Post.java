@@ -3,7 +3,6 @@ package com.example.carforum.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "posts")
@@ -14,11 +13,9 @@ public class Post {
     private int id;
 
     @Column(name = "title")
-    @Size(min = 16, max = 64)
     private String title;
 
     @Column(name = "content")
-    @Size(min = 32, max = 8192)
     private String content;
 
     @ManyToOne
