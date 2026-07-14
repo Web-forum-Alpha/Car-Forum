@@ -2,79 +2,130 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" th:href="@{/style.css}">
+
     <title>Register</title>
 </head>
+
 <body>
 
-<h1>Register</h1>
+<header class="topbar">
+    <a class="logo" th:href="@{/}">
+        Car Forum
+    </a>
 
-<form th:action="@{/users/register}"
-      th:object="${userCreateDto}"
-      method="post">
+    <input type="checkbox"
+           id="menu-toggle"
+           class="menu-toggle-checkbox">
 
-    <div>
+    <label for="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
+    <nav class="nav-links">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/users/login}">Login</a>
+    </nav>
+</header>
+
+<div class="form-page">
+
+    <form th:action="@{/users/register}"
+          th:object="${userCreateDto}"
+          method="post">
+
+        <label>Register</label>
+
         <label for="username">Username</label>
-        <input id="username" type="text" th:field="*{username}">
 
-        <p th:if="${#fields.hasErrors('username')}"
-           th:errors="*{username}">
-        </p>
-    </div>
+        <input id="username"
+               type="text"
+               th:field="*{username}">
 
-    <div>
+        <label class="error"
+               th:if="${#fields.hasErrors('username')}"
+               th:errors="*{username}">
+        </label>
+
+
         <label for="password">Password</label>
-        <input id="password" type="password" th:field="*{password}">
 
-        <p th:if="${#fields.hasErrors('password')}"
-           th:errors="*{password}">
-        </p>
-    </div>
+        <input id="password"
+               type="password"
+               th:field="*{password}">
 
-    <div>
-        <label for="firstName">First name</label>
-        <input id="firstName" type="text" th:field="*{firstName}">
+        <label class="error"
+               th:if="${#fields.hasErrors('password')}"
+               th:errors="*{password}">
+        </label>
 
-        <p th:if="${#fields.hasErrors('firstName')}"
-           th:errors="*{firstName}">
-        </p>
-    </div>
 
-    <div>
-        <label for="lastName">Last name</label>
-        <input id="lastName" type="text" th:field="*{lastName}">
+        <label for="firstName">First Name</label>
 
-        <p th:if="${#fields.hasErrors('lastName')}"
-           th:errors="*{lastName}">
-        </p>
-    </div>
+        <input id="firstName"
+               type="text"
+               th:field="*{firstName}">
 
-    <div>
+        <label class="error"
+               th:if="${#fields.hasErrors('firstName')}"
+               th:errors="*{firstName}">
+        </label>
+
+
+        <label for="lastName">Last Name</label>
+
+        <input id="lastName"
+               type="text"
+               th:field="*{lastName}">
+
+        <label class="error"
+               th:if="${#fields.hasErrors('lastName')}"
+               th:errors="*{lastName}">
+        </label>
+
+
         <label for="email">Email</label>
-        <input id="email" type="email" th:field="*{email}">
 
-        <p th:if="${#fields.hasErrors('email')}"
-           th:errors="*{email}">
-        </p>
-    </div>
+        <input id="email"
+               type="email"
+               th:field="*{email}">
 
-    <div>
-        <label for="phoneNumber">Phone number</label>
-        <input id="phoneNumber" type="text" th:field="*{phoneNumber}">
+        <label class="error"
+               th:if="${#fields.hasErrors('email')}"
+               th:errors="*{email}">
+        </label>
 
-        <p th:if="${#fields.hasErrors('phoneNumber')}"
-           th:errors="*{phoneNumber}">
-        </p>
-    </div>
 
-    <p th:if="${errorMessage}"
-       th:text="${errorMessage}">
-    </p>
+        <label for="phoneNumber">Phone Number</label>
 
-    <button type="submit">Register</button>
+        <input id="phoneNumber"
+               type="text"
+               th:field="*{phoneNumber}">
 
-    <a th:href="@{/home}">Back</a>
-</form>
+        <label class="error"
+               th:if="${#fields.hasErrors('phoneNumber')}"
+               th:errors="*{phoneNumber}">
+        </label>
+
+
+        <label class="error"
+               th:if="${errorMessage}"
+               th:text="${errorMessage}">
+        </label>
+
+        <input type="submit" value="Register">
+
+        <a th:href="@{/users/login}">
+            Already have an account? Login
+        </a>
+
+    </form>
+
+</div>
 
 </body>
 </html>

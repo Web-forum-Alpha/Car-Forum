@@ -26,7 +26,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserMvcController {
-    private static final String ALREADY_LOGGED_IN = "You are already logged in. Logout first to register another user.";
+    private static final String ALREADY_LOGGED_IN = "You are already logged in! Logout first!";
     private static final String LOGIN_CREDENTIALS_ERROR_MESSAGE = "Invalid username or password!";
 
     private final UserService userService;
