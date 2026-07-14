@@ -60,4 +60,16 @@ public class PostRepositoryImpl implements PostRepository {
                 .setMaxResults(10)
                 .getResultList();
     }
+
+    @Override
+    public List<Post> getTenMostCommentedPosts() {
+        return entityManager.createQuery(
+                        "SELECT p FROM Post p " +
+                                "LEFT JOIN Comment c ON c.post = p " +
+                                "GROUP BY p " +
+                                "ORDER BY COUNT(c) DESC", Post.class
+                )
+                .setMaxResults(10)
+                .getResultList();
+    }
 }

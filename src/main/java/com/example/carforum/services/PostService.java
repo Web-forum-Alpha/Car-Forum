@@ -12,6 +12,7 @@ public interface PostService {
     List<Post> getAll();
 
     List<Post> getTenMostRecentPosts();
+    List<Post> getTenMostCommentedPosts();
 
     void create(Post post);
     void update(Post post, User user);

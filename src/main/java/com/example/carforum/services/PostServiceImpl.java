@@ -45,6 +45,10 @@ public class PostServiceImpl implements PostService {
         return repository.getTenMostRecentPosts();
     }
 
+    @Override
+    public List<Post> getTenMostCommentedPosts() {
+        return repository.getTenMostCommentedPosts();
+    }
 
     @Override
     public void create(Post post) {
