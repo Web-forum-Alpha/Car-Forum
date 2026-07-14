@@ -1,7 +1,12 @@
 package com.example.carforum.models;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginDto {
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String password;
 
     public LoginDto() {

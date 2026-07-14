@@ -79,6 +79,16 @@ public class ModelMapper {
         return user;
     }
 
+    public UserUpdateDto toDtoUpdate(User user){
+        UserUpdateDto dto = new UserUpdateDto();
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setPassword(user.getPassword());
+        return dto;
+    }
+
 
     //COMMENT DTO
     public Comment fromDtoCreate(CommentDto commentDto){
