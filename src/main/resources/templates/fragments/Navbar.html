@@ -3,7 +3,7 @@
 <body>
 
 <nav class="topbar" th:fragment="navbar">
-    <a th:href="@{/posts}" class="logo">Car-Forum</a>
+    <a th:href="@{/}" class="logo">Car-Forum</a>
 
     <input type="checkbox" id="menu-toggle" class="menu-toggle-checkbox">
     <label for="menu-toggle" class="hamburger">
@@ -15,7 +15,7 @@
     <div class="nav-links">
         <a th:href="@{/posts}">Posts</a>
         <a th:href="@{/posts/new}">New Post</a>
-        <a th:if="${user != null}" th:href="@{/account}" class="account-btn">Account</a>
+        <a th:if="${user != null}" th:href="@{/users/profile}" class="account-btn">Account</a>
         <a th:if="${user != null}" th:href="@{/users/logout}">Logout</a>
         <a th:unless="${user != null}" th:href="@{/users/login}">Login</a>
         <a th:unless="${user != null}" th:href="@{/users/register}">Register</a>
