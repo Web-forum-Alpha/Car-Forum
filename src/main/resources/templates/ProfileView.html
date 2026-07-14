@@ -115,6 +115,17 @@
 
         <div class="row">
             <div class="post-general-info">
+                <strong>Password</strong>
+
+                <span th:text="${currentUser.password}">
+                    Password
+                </span>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="post-general-info">
                 <strong>Email</strong>
 
                 <span th:text="${currentUser.email}">
@@ -171,6 +182,20 @@
 
                 <p th:if="${#fields.hasErrors('lastName')}"
                    th:errors="*{lastName}">
+                </p>
+            </div>
+
+            <div>
+                <label for="password">
+                    Password
+                </label>
+
+                <input id="password"
+                       type="text"
+                       th:field="*{password}">
+
+                <p th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}">
                 </p>
             </div>
 

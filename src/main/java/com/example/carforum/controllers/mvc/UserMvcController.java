@@ -126,5 +126,36 @@ public class UserMvcController {
 
         return "ProfileView";
     }
+
+    @PostMapping("/profile")
+    public String profile(@Valid @ModelAttribute("userUpdateDto") UserUpdateDto userUpdateDto,
+                          BindingResult bindingResult,
+                          HttpSession session,
+                          Model model) {
+
+        User currentUser = authenticationHelper.getCurrentUser(session);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("currentUser", currentUser);
+            return "ProfileView";
+        }
+
+        User userToUpdate = userService.getById(currentUser.getId());
+
+
+        if (userToUpdate == null) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.value());
+            model.addAttribute("error", "User not found.");
+            return "ErrorView";
+        }
+
+        User userFromDto = modelMapper.fromDtoUpdate(userToUpdate, userUpdateDto);
+
+        userService.update(userFromDto);
+
+        model.addAttribute("currentUser", userFromDto);
+
+        return "redirect:/users/profile";
+    }
 }
 
