@@ -36,7 +36,7 @@ public class UserMvcController {
 
     @GetMapping("/register")
     public String register(HttpSession session, Model model) {
-        if(authenticationHelper.isLoggedIn(session)){
+        if (authenticationHelper.isLoggedIn(session)) {
             model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
             model.addAttribute("error", ALREADY_LOGGED_IN);
             return "ErrorView";
@@ -48,7 +48,7 @@ public class UserMvcController {
 
     @GetMapping("/login")
     public String login(HttpSession session, Model model) {
-        if(authenticationHelper.isLoggedIn(session)){
+        if (authenticationHelper.isLoggedIn(session)) {
             model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
             model.addAttribute("error", ALREADY_LOGGED_IN);
             return "ErrorView";
@@ -66,14 +66,14 @@ public class UserMvcController {
             return "ErrorView";
         }
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "RegisterView";
         }
 
         User user = modelMapper.fromDtoCreate(userCreateDto);
 
-        List <User> usersByEmail = userService.search(null, user.getEmail(), null);
-        List <User> usersByUsername = userService.search(user.getUsername(), null, null);
+        List<User> usersByEmail = userService.search(null, user.getEmail(), null);
+        List<User> usersByUsername = userService.search(user.getUsername(), null, null);
 
         if (!usersByEmail.isEmpty() || !usersByUsername.isEmpty()) {
             String errorMessage = usersByEmail.isEmpty() ? "Username already exists!" : "Email already exists!";
@@ -87,14 +87,14 @@ public class UserMvcController {
 
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginDto") LoginDto loginDto,BindingResult bindingResult, Model model, HttpSession session) {
+    public String login(@Valid @ModelAttribute("loginDto") LoginDto loginDto, BindingResult bindingResult, Model model, HttpSession session) {
         if (authenticationHelper.isLoggedIn(session)) {
             model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
             model.addAttribute("error", ALREADY_LOGGED_IN);
             return "ErrorView";
         }
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "LoginView";
         }
 
@@ -126,5 +126,5 @@ public class UserMvcController {
 
         return "ProfileView";
     }
-
+}
 
