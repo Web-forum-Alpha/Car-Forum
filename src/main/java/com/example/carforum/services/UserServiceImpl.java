@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public long getCountUsers() {
+        return userRepository.getCountUsers();
+    }
+
+    @Override
     public User getById(int id) {
         return userRepository.getById(id);
     }

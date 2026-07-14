@@ -14,6 +14,8 @@ public interface PostService {
     List<Post> getTenMostRecentPosts();
     List<Post> getTenMostCommentedPosts();
 
+    long getCountPosts();
+
     void create(Post post);
     void update(Post post, User user);
     void deleteById(int id, User user);
