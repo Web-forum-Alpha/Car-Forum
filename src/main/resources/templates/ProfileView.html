@@ -2,156 +2,261 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" th:href="@{/style.css}">
+
     <title>My Profile</title>
 </head>
+
 <body>
 
-<h1>My Profile</h1>
+<header class="topbar">
+    <a class="logo" th:href="@{/}">
+        Car Forum
+    </a>
 
-<div>
+    <input type="checkbox"
+           id="menu-toggle"
+           class="menu-toggle-checkbox">
 
-    <img th:if="${currentUser.profilePicturePath != null}"
-         th:src="${currentUser.profilePicturePath}"
-         alt="Profile picture"
-         width="180">
+    <label for="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
 
-    <p th:if="${currentUser.profilePicturePath == null}">
-        No profile picture uploaded.
-    </p>
+    <nav class="nav-links">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/posts}">Posts</a>
+        <a class="account-btn" th:href="@{/users/profile}">
+            My Profile
+        </a>
+    </nav>
+</header>
 
-</div>
+<main class="body-content">
 
-<hr>
+    <section class="post-header">
+        <h1>My Profile</h1>
 
-<h2>Profile Information</h2>
+        <a th:href="@{/}">
+            Back to Home
+        </a>
+    </section>
 
-<p>
-    <strong>Username:</strong>
-    <span th:text="${currentUser.username}"></span>
-</p>
+    <div th:if="${successMessage}"
+         class="post-general-info row">
 
-<p>
-    <strong>First Name:</strong>
-    <span th:text="${currentUser.firstName}"></span>
-</p>
-
-<p>
-    <strong>Last Name:</strong>
-    <span th:text="${currentUser.lastName}"></span>
-</p>
-
-<p>
-    <strong>Email:</strong>
-    <span th:text="${currentUser.email}"></span>
-</p>
-
-<p>
-    <strong>Phone Number:</strong>
-    <span th:text="${currentUser.phoneNumber}"></span>
-</p>
-
-<hr>
-
-<h2>Edit Profile</h2>
-
-<form th:action="@{/profile}"
-      th:object="${userUpdateDto}"
-      method="post">
-
-    <div>
-        <label for="firstName">First Name</label>
-
-        <input id="firstName"
-               type="text"
-               th:field="*{firstName}">
-
-        <p th:if="${#fields.hasErrors('firstName')}"
-           th:errors="*{firstName}">
-        </p>
+        <span th:text="${successMessage}">
+            Operation completed successfully.
+        </span>
     </div>
 
-    <div>
-        <label for="lastName">Last Name</label>
+    <div th:if="${errorMessage}"
+         class="post-general-info row">
 
-        <input id="lastName"
-               type="text"
-               th:field="*{lastName}">
-
-        <p th:if="${#fields.hasErrors('lastName')}"
-           th:errors="*{lastName}">
-        </p>
+        <span th:text="${errorMessage}">
+            Something went wrong.
+        </span>
     </div>
 
-    <div>
-        <label for="email">Email</label>
+    <section class="post-content">
 
-        <input id="email"
-               type="email"
-               th:field="*{email}">
+        <div>
+            <img th:if="${currentUser.profilePicturePath != null
+                         and !currentUser.profilePicturePath.isBlank()}"
+                 th:src="${currentUser.profilePicturePath}"
+                 alt="Profile picture"
+                 width="180"
+                 height="180">
 
-        <p th:if="${#fields.hasErrors('email')}"
-           th:errors="*{email}">
-        </p>
-    </div>
+            <p th:unless="${currentUser.profilePicturePath != null
+                          and !currentUser.profilePicturePath.isBlank()}">
+                No profile picture uploaded.
+            </p>
+        </div>
 
-    <div>
-        <label for="phoneNumber">Phone Number</label>
+    </section>
 
-        <input id="phoneNumber"
-               type="text"
-               th:field="*{phoneNumber}">
+    <h2>Profile Information</h2>
 
-        <p th:if="${#fields.hasErrors('phoneNumber')}"
-           th:errors="*{phoneNumber}">
-        </p>
-    </div>
+    <section>
 
-    <button type="submit">
-        Save Changes
-    </button>
+        <div class="row">
+            <div class="post-general-info">
+                <strong>Username</strong>
 
-</form>
+                <span th:text="${currentUser.username}">
+                    username
+                </span>
+            </div>
+        </div>
 
-<hr>
+        <div class="row">
+            <div class="post-general-info">
+                <strong>First Name</strong>
 
-<h2>Upload Profile Picture</h2>
+                <span th:text="${currentUser.firstName}">
+                    First name
+                </span>
+            </div>
+        </div>
 
-<form th:action="@{/profile/picture}"
-      method="post"
-      enctype="multipart/form-data">
+        <div class="row">
+            <div class="post-general-info">
+                <strong>Last Name</strong>
 
-    <input type="file"
-           name="picture"
-           accept="image/*">
+                <span th:text="${currentUser.lastName}">
+                    Last name
+                </span>
+            </div>
+        </div>
 
-    <button type="submit">
-        Upload Picture
-    </button>
+        <div class="row">
+            <div class="post-general-info">
+                <strong>Email</strong>
 
-</form>
+                <span th:text="${currentUser.email}">
+                    email@example.com
+                </span>
+            </div>
+        </div>
 
-<hr>
+        <div class="row">
+            <div class="post-general-info">
+                <strong>Phone Number</strong>
 
-<p th:if="${successMessage}"
-   th:text="${successMessage}">
-</p>
+                <span th:text="${currentUser.phoneNumber != null
+                                and !currentUser.phoneNumber.isBlank()
+                                ? currentUser.phoneNumber
+                                : 'Not provided'}">
+                    Not provided
+                </span>
+            </div>
+        </div>
 
-<p th:if="${errorMessage}"
-   th:text="${errorMessage}">
-</p>
+    </section>
 
-<hr>
+    <h2>Edit Profile</h2>
 
-<a th:href="@{/home}">Home</a>
+    <section class="add-comment">
 
-<form th:action="@{/logout}"
-      method="post">
+        <form th:action="@{/users/profile}"
+              th:object="${userUpdateDto}"
+              method="post">
 
-    <button type="submit">
-        Logout
-    </button>
+            <div>
+                <label for="firstName">
+                    First Name
+                </label>
 
-</form>
+                <input id="firstName"
+                       type="text"
+                       th:field="*{firstName}">
+
+                <p th:if="${#fields.hasErrors('firstName')}"
+                   th:errors="*{firstName}">
+                </p>
+            </div>
+
+            <div>
+                <label for="lastName">
+                    Last Name
+                </label>
+
+                <input id="lastName"
+                       type="text"
+                       th:field="*{lastName}">
+
+                <p th:if="${#fields.hasErrors('lastName')}"
+                   th:errors="*{lastName}">
+                </p>
+            </div>
+
+            <div>
+                <label for="email">
+                    Email
+                </label>
+
+                <input id="email"
+                       type="email"
+                       th:field="*{email}">
+
+                <p th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}">
+                </p>
+            </div>
+
+            <div>
+                <label for="phoneNumber">
+                    Phone Number
+                </label>
+
+                <input id="phoneNumber"
+                       type="text"
+                       th:field="*{phoneNumber}">
+
+                <p th:if="${#fields.hasErrors('phoneNumber')}"
+                   th:errors="*{phoneNumber}">
+                </p>
+            </div>
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </form>
+
+    </section>
+
+    <h2>Upload Profile Picture</h2>
+
+    <section class="add-comment">
+
+        <form th:action="@{/users/profile/picture}"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div>
+                <label for="picture">
+                    Select a picture
+                </label>
+
+                <input id="picture"
+                       type="file"
+                       name="picture"
+                       accept="image/png,image/jpeg,image/webp"
+                       required>
+            </div>
+
+            <button type="submit">
+                Upload Picture
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="post-likes">
+
+        <a class="like-btn not-liked"
+           th:href="@{/}">
+            Home
+        </a>
+
+        <form th:action="@{/users/logout}"
+              method="post">
+
+            <button class="like-btn liked"
+                    type="submit">
+                Logout
+            </button>
+        </form>
+
+    </section>
+
+</main>
 
 </body>
 </html>
