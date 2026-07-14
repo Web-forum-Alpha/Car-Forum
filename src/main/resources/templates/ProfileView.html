@@ -64,15 +64,13 @@
     <section class="post-content">
 
         <div>
-            <img th:if="${currentUser.profilePicturePath != null
-                         and !currentUser.profilePicturePath.isBlank()}"
-                 th:src="${currentUser.profilePicturePath}"
+            <img th:if="${profilePictureUrl != null}"
+                 th:src="${profilePictureUrl}"
                  alt="Profile picture"
                  width="180"
                  height="180">
 
-            <p th:unless="${currentUser.profilePicturePath != null
-                          and !currentUser.profilePicturePath.isBlank()}">
+            <p th:unless="${profilePictureUrl != null}">
                 No profile picture uploaded.
             </p>
         </div>
