@@ -14,6 +14,8 @@ public interface PostRepository{
     List<Post> getTenMostRecentPosts();
     List<Post> getTenMostCommentedPosts();
 
+    long getCountPosts();
+
     void create(Post post);
     void update(Post post);
     void delete(Post post);

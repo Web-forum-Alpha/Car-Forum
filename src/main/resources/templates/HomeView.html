@@ -15,6 +15,17 @@
     <h1 th:unless="${user != null}">Welcome</h1>
 </div>
 
+<div class="stats-bar">
+    <div class="stat-item">
+        <span class="stat-number" th:text="${usersCount}">0</span>
+        <span class="stat-label">Users</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" th:text="${postsCount}">0</span>
+        <span class="stat-label">Posts</span>
+    </div>
+</div>
+
 <div class="home-columns">
     <div class="body-content column">
         <div th:if="${recentPosts.isEmpty()}">

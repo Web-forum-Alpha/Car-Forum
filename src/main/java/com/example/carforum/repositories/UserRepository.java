@@ -8,6 +8,8 @@ import java.util.List;
 public interface UserRepository {
     List<User> getAll();
 
+    long getCountUsers();
+
     User getById(int id);
 
     User getByUsername(String userName);

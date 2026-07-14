@@ -32,6 +32,13 @@ public class PostRepositoryImpl implements PostRepository {
                 .getResultList();
     }
 
+    @Override
+    public long getCountPosts() {
+        return entityManager
+                .createQuery("SELECT COUNT(p) FROM Post p", Long.class)
+                .getSingleResult();
+    }
+
     @Transactional
     @Override
     public void create(Post post) {
