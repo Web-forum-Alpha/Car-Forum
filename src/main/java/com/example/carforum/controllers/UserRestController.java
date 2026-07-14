@@ -27,7 +27,6 @@ public class UserRestController {
     private static final String ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE = "You are already logged in, to register another user, logout first!";
     private static final String ALREADY_LOGGED_OUT_ERROR_MESSAGE = "You are already logged out!";
     private static final String USERID_NOT_FOUND = "User with id %d is not found!";
-    private static final String USERNAME_NOT_FOUND = "User with username %s is not found!";
     private static final String USER_NOT_FOUND = "User not found!";
     private static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
     private static final String ACCESS_UPDATE_ERROR_MESSAGE = "You are not authorized to update other user's information.";
@@ -173,6 +172,15 @@ public class UserRestController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ALREADY_LOGGED_IN_REGISTER_ERROR_MESSAGE);
         }
         User user = modelMapper.fromDtoCreate(userCreateDto);
+
+        List<User> usersByEmail = userService.search(null, user.getEmail(), null);
+        List<User> usersByUsername = userService.search(user.getUsername(), null, null);
+
+        if (!usersByEmail.isEmpty() || !usersByUsername.isEmpty()) {
+            String errorMessage = usersByEmail.isEmpty() ? "Username already exists!" : "Email already exists!";
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
+        }
+
         userService.create(user);
     }
 

@@ -11,7 +11,6 @@ import java.util.List;
 @Component
 public class ModelMapper {
 
-    private static final int DEFAULT_LIKES_WHEN_POST_CREATED = 0;
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
@@ -29,7 +28,6 @@ public class ModelMapper {
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
-        post.setLikes(DEFAULT_LIKES_WHEN_POST_CREATED);
         post.setUser(creator);
 
         return post;
@@ -79,6 +77,16 @@ public class ModelMapper {
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
 
         return user;
+    }
+
+    public UserUpdateDto toDtoUpdate(User user){
+        UserUpdateDto dto = new UserUpdateDto();
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setPassword(user.getPassword());
+        return dto;
     }
 
 

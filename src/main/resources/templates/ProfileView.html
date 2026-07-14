@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+
+<h1>My Profile</h1>
+
+<div>
+
+    <img th:if="${currentUser.profilePicturePath != null}"
+         th:src="${currentUser.profilePicturePath}"
+         alt="Profile picture"
+         width="180">
+
+    <p th:if="${currentUser.profilePicturePath == null}">
+        No profile picture uploaded.
+    </p>
+
+</div>
+
+<hr>
+
+<h2>Profile Information</h2>
+
+<p>
+    <strong>Username:</strong>
+    <span th:text="${currentUser.username}"></span>
+</p>
+
+<p>
+    <strong>First Name:</strong>
+    <span th:text="${currentUser.firstName}"></span>
+</p>
+
+<p>
+    <strong>Last Name:</strong>
+    <span th:text="${currentUser.lastName}"></span>
+</p>
+
+<p>
+    <strong>Email:</strong>
+    <span th:text="${currentUser.email}"></span>
+</p>
+
+<p>
+    <strong>Phone Number:</strong>
+    <span th:text="${currentUser.phoneNumber}"></span>
+</p>
+
+<hr>
+
+<h2>Edit Profile</h2>
+
+<form th:action="@{/profile}"
+      th:object="${userUpdateDto}"
+      method="post">
+
+    <div>
+        <label for="firstName">First Name</label>
+
+        <input id="firstName"
+               type="text"
+               th:field="*{firstName}">
+
+        <p th:if="${#fields.hasErrors('firstName')}"
+           th:errors="*{firstName}">
+        </p>
+    </div>
+
+    <div>
+        <label for="lastName">Last Name</label>
+
+        <input id="lastName"
+               type="text"
+               th:field="*{lastName}">
+
+        <p th:if="${#fields.hasErrors('lastName')}"
+           th:errors="*{lastName}">
+        </p>
+    </div>
+
+    <div>
+        <label for="email">Email</label>
+
+        <input id="email"
+               type="email"
+               th:field="*{email}">
+
+        <p th:if="${#fields.hasErrors('email')}"
+           th:errors="*{email}">
+        </p>
+    </div>
+
+    <div>
+        <label for="phoneNumber">Phone Number</label>
+
+        <input id="phoneNumber"
+               type="text"
+               th:field="*{phoneNumber}">
+
+        <p th:if="${#fields.hasErrors('phoneNumber')}"
+           th:errors="*{phoneNumber}">
+        </p>
+    </div>
+
+    <button type="submit">
+        Save Changes
+    </button>
+
+</form>
+
+<hr>
+
+<h2>Upload Profile Picture</h2>
+
+<form th:action="@{/profile/picture}"
+      method="post"
+      enctype="multipart/form-data">
+
+    <input type="file"
+           name="picture"
+           accept="image/*">
+
+    <button type="submit">
+        Upload Picture
+    </button>
+
+</form>
+
+<hr>
+
+<p th:if="${successMessage}"
+   th:text="${successMessage}">
+</p>
+
+<p th:if="${errorMessage}"
+   th:text="${errorMessage}">
+</p>
+
+<hr>
+
+<a th:href="@{/home}">Home</a>
+
+<form th:action="@{/logout}"
+      method="post">
+
+    <button type="submit">
+        Logout
+    </button>
+
+</form>
+
+</body>
+</html>
