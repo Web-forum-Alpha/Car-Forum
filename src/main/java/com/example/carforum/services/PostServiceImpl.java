@@ -2,6 +2,7 @@ package com.example.carforum.services;
 
 import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
+import com.example.carforum.models.FilterOptions;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.User;
 import com.example.carforum.repositories.PostRepository;
@@ -36,8 +37,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getAll() {
-        return repository.getAll();
+    public List<Post> getAll(FilterOptions filterOptions) {
+        return repository.getAll(filterOptions);
     }
 
     @Override

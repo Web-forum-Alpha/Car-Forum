@@ -11,6 +11,9 @@
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 <div class="body-content">
+
+    <div th:replace="~{fragments/PostsFilterFragment :: filterForm}"></div>
+
     <div th:if="${posts.isEmpty()}">
         <h2> No Posts</h2>
     </div>

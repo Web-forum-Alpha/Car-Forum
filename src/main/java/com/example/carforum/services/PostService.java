@@ -1,5 +1,6 @@
 package com.example.carforum.services;
 
+import com.example.carforum.models.FilterOptions;
 import com.example.carforum.models.Post;
 import com.example.carforum.models.User;
 
@@ -9,7 +10,7 @@ public interface PostService {
 
     Post getById(int id);
 
-    List<Post> getAll();
+    List<Post> getAll(FilterOptions filterOptions);
 
     List<Post> getTenMostRecentPosts();
     List<Post> getTenMostCommentedPosts();

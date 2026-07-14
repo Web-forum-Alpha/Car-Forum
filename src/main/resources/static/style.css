@@ -551,3 +551,79 @@ h2 {
         align-items: center;
     }
 }
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f7f9fc;
+    border-radius: 20px;
+}
+
+.filter-bar input[type="text"] {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 16px;
+    border: 1px solid #e3e7ef;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #3a3f4b;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.filter-bar input[type="text"]:focus {
+    border-color: #a9b6ff;
+}
+
+.filter-bar select {
+    padding: 10px 14px;
+    border: 1px solid #e3e7ef;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #3a3f4b;
+    background: #ffffff;
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-bar button {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 22px;
+    background: #6c7dfc;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.filter-bar button:hover {
+    background: #5a6bf5;
+}
+
+.filter-bar .clear-filter {
+    font-size: 0.85rem;
+    color: #8890a0;
+    text-decoration: none;
+    padding: 10px 8px;
+    transition: color 0.2s ease;
+}
+
+.filter-bar .clear-filter:hover {
+    color: #6c7dfc;
+}
+
+@media (max-width: 600px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
