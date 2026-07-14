@@ -10,6 +10,7 @@ import com.example.carforum.services.LikeService;
 import com.example.carforum.services.PostService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.apache.tomcat.util.buf.UEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -52,6 +53,7 @@ public class PostMvcController {
             return "redirect:/users/login";
         }
 
+        model.addAttribute("user", user);
         model.addAttribute("posts", postService.getAll());
         return "PostsView";
     }
@@ -77,6 +79,7 @@ public class PostMvcController {
                     likeService.isLikedByUser(postId,user.getId())
             );
 
+            model.addAttribute("user", user);
             model.addAttribute("postDetails", dto);
             model.addAttribute("commentDto", new CommentDto());
 
@@ -92,15 +95,16 @@ public class PostMvcController {
     @GetMapping("/new")
     public String showCreatePostPage(Model model, HttpSession session){
 
+        User user;
         try{
 
-            authenticationHelper.getCurrentUser(session);
+            user = authenticationHelper.getCurrentUser(session);
 
         }catch (ResponseStatusException e){
 
             return "redirect:/users/login";
         }
-
+        model.addAttribute("user", user);
         model.addAttribute("post", new PostDto());
         return "CreatePostView";
 
@@ -159,6 +163,7 @@ public class PostMvcController {
 
             PostDto dto = mapper.toDtoUpdate(postId, post);
 
+            model.addAttribute("user", user);
             model.addAttribute("postId", postId);
             model.addAttribute("post", dto);
 
@@ -192,7 +197,6 @@ public class PostMvcController {
         }
 
         try{
-
             Post post = mapper.fromDtoUpdate(postId, postDto);
             postService.update(post, user);
 
