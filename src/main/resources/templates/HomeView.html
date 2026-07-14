@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Home</title>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="home-hero">
+    <h1 th:if="${user != null}" th:text="'Welcome, ' + ${user.username} + '!'">Welcome</h1>
+    <h1 th:unless="${user != null}">Welcome</h1>
+</div>
+
+<div class="home-columns">
+    <div class="body-content column">
+        <div th:if="${recentPosts.isEmpty()}">
+            <h2>No Recent Posts</h2>
+        </div>
+        <div th:unless="${recentPosts.isEmpty()}">
+            <h2>Recent Posts</h2>
+        </div>
+
+        <div class="row" th:each="post : ${recentPosts}">
+            <div class="post-general-info">
+                <a th:href="@{/posts}" th:text="${post.user.getUsername()}">Author</a>
+                <br>
+                <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
+                <br><br>
+            </div>
+        </div>
+    </div>
+
+    <div class="body-content column">
+        <div th:if="${mostCommentedPosts.isEmpty()}">
+            <h2>No Most Commented Posts</h2>
+        </div>
+        <div th:unless="${mostCommentedPosts.isEmpty()}">
+            <h2>Most Commented</h2>
+        </div>
+
+        <div class="row" th:each="post : ${mostCommentedPosts}">
+            <div class="post-general-info">
+                <a th:href="@{/posts}" th:text="${post.user.getUsername()}">Author</a>
+                <br>
+                <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
+                <br><br>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

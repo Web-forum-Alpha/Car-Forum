@@ -349,3 +349,167 @@ body > form input[type="submit"] {
 body > form input[type="submit"]:hover {
     background: #5a6bf5;
 }
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 12px rgba(100, 116, 149, 0.08);
+}
+
+.topbar .logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c313d;
+    text-decoration: none;
+}
+
+.menu-toggle-checkbox {
+    display: none;
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    z-index: 110;
+}
+
+.hamburger span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: #6c7dfc;
+    border-radius: 999px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.menu-toggle-checkbox:checked ~ .hamburger span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle-checkbox:checked ~ .hamburger span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle-checkbox:checked ~ .hamburger span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: absolute;
+    top: 100%;
+    right: 32px;
+    margin-top: 12px;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(100, 116, 149, 0.16);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.menu-toggle-checkbox:checked ~ .nav-links {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.nav-links a {
+    padding: 10px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #4a4f5c;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: #f0f2ff;
+    color: #6c7dfc;
+}
+
+@media (min-width: 768px) {
+    .hamburger {
+        display: none;
+    }
+
+    .nav-links {
+        position: static;
+        flex-direction: row;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    .nav-links a {
+        padding: 8px 16px;
+    }
+}
+
+.nav-links a.account-btn {
+    background: #6c7dfc;
+    color: #ffffff;
+}
+
+.nav-links a.account-btn:hover {
+    background: #5a6bf5;
+    color: #ffffff;
+}
+
+.home-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.home-hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c313d;
+    text-align: center;
+}
+
+.home-columns {
+    display: flex;
+    gap: 24px;
+    max-width: 1080px;
+    margin: 0 auto 40px;
+    padding: 0 20px;
+    align-items: flex-start;
+}
+
+.home-columns .body-content.column {
+    flex: 1;
+    max-width: none;
+    margin: 0;
+}
+
+@media (max-width: 720px) {
+    .home-columns {
+        flex-direction: column;
+    }
+}

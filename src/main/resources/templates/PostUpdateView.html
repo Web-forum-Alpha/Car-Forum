@@ -7,6 +7,9 @@
     <title>Update</title>
 </head>
 <body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+
 <form action="#" th:action="@{/posts/{id}/update(id = ${postId})}" th:object="${post}" method="post">
 
     <label>Post</label>

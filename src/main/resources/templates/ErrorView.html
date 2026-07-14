@@ -7,6 +7,8 @@
     <title th:text="${statusCode}">Error</title>
 </head>
 <body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
 
 <h1 th:text="${error}"> Error</h1>
 

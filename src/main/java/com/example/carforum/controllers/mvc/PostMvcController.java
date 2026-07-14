@@ -42,7 +42,15 @@ public class PostMvcController {
     }
 
     @GetMapping
-    public String getAllPosts(Model model){
+    public String getAllPosts(Model model, HttpSession session){
+
+        User user;
+        try {
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+
+            return "redirect:/users/login";
+        }
 
         model.addAttribute("posts", postService.getAll());
         return "PostsView";
@@ -56,7 +64,7 @@ public class PostMvcController {
            user = authenticationHelper.getCurrentUser(session);
        }catch (ResponseStatusException e){
 
-           return "redirect:/auth/login";
+           return "redirect:/users/login";
        }
 
         try{
@@ -90,7 +98,7 @@ public class PostMvcController {
 
         }catch (ResponseStatusException e){
 
-            return "redirect:/auth/login";
+            return "redirect:/users/login";
         }
 
         model.addAttribute("post", new PostDto());
@@ -109,7 +117,7 @@ public class PostMvcController {
             user = authenticationHelper.getCurrentUser(session);
 
         }catch (ResponseStatusException e){
-            return "redirect:/auth/login";
+            return "redirect:/users/login";
         }
 
         if (bindingResult.hasErrors()){
@@ -137,7 +145,7 @@ public class PostMvcController {
         try{
             user = authenticationHelper.getCurrentUser(session);
         }catch (ResponseStatusException e){
-            return "redirect:/auth/login";
+            return "redirect:/users/login";
         }
 
         try{
@@ -176,7 +184,7 @@ public class PostMvcController {
 
         }catch (ResponseStatusException e){
 
-            return "redirect:/auth/login";
+            return "redirect:/users/login";
         }
 
         if (bindingResult.hasErrors()){
@@ -211,7 +219,7 @@ public class PostMvcController {
             user = authenticationHelper.getCurrentUser(session);
         }catch (ResponseStatusException e){
 
-            return "redirect:/auth/login";
+            return "redirect:/users/login";
         }
 
         try{
@@ -234,7 +242,7 @@ public class PostMvcController {
         try{
             user = authenticationHelper.getCurrentUser(session);
         }catch (ResponseStatusException e){
-            return "redirect:/auth/login";
+            return "redirect:/users/login";
         }
 
         try{
