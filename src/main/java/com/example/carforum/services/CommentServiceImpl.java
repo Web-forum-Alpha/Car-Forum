@@ -1,5 +1,6 @@
 package com.example.carforum.services;
 
+import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.models.Comment;
 import com.example.carforum.repositories.CommentRepository;
@@ -15,6 +16,7 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private static final String NOT_FOUND_MESSAGE = "%s with %d id was not found!";
+    private static final String BLOCKED_USER_MESSAGE = "You are not authorized to create comments!";
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
@@ -69,6 +71,10 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void create(Comment comment) {
+
+        if (comment.getUser().isBlocked()){
+            throw new AuthorizationException(BLOCKED_USER_MESSAGE);
+        }
 
         commentRepository.create(comment);
 

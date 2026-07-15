@@ -16,8 +16,9 @@ public class PostServiceImpl implements PostService {
 
 
     private static final String NOT_FOUND_MESSAGE = "%s with %d id was not found!";
-    public static final String DELETE_ERROR_MESSAGE = "You are not authorized to delete posts created by other users.";
-    public static final String UPDATE_ERROR_MESSAGE = "You are not authorized to edit posts created by other users.";
+    private static final String DELETE_ERROR_MESSAGE = "You are not authorized to delete posts created by other users.";
+    private static final String UPDATE_ERROR_MESSAGE = "You are not authorized to edit posts created by other users.";
+    private static final String BLOCKED_USER_MESSAGE = "You are not authorized to create posts!";
     private final PostRepository repository;
 
     @Autowired
@@ -59,11 +60,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void create(Post post) {
+
+
+        if (post.getUser().isBlocked()){
+            throw  new AuthorizationException(BLOCKED_USER_MESSAGE);
+        }
+
         repository.create(post);
     }
 
     @Override
     public void update(Post post, User user) {
+
 
         checkModifyPermission(post, user, UPDATE_ERROR_MESSAGE);
         repository.update(post);

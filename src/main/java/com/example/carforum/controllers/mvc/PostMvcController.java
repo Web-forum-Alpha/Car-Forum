@@ -143,7 +143,12 @@ public class PostMvcController {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
+        }catch (AuthorizationException e){
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
         }
+
 
 
     }
@@ -265,6 +270,10 @@ public class PostMvcController {
 
         }catch (EntityNotFoundException e){
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }catch (AuthorizationException e){
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
         }
