@@ -725,3 +725,44 @@ h2 {
         align-items: stretch;
     }
 }
+
+
+.post-actions {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eef1f6;
+}
+
+.update-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 8px 20px;
+    background: #f0f2ff;
+    color: #6c7dfc;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.update-btn:hover {
+    background: #e2e6ff;
+}
+
+.delete-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 8px 20px;
+    background: #fdf0f3;
+    color: #e0698a;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #fbe1e8;
+}
