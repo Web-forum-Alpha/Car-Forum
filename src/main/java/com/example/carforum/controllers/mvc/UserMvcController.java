@@ -6,32 +6,39 @@ import com.example.carforum.models.LoginDto;
 import com.example.carforum.models.User;
 import com.example.carforum.models.UserCreateDto;
 import com.example.carforum.models.UserUpdateDto;
+import com.example.carforum.services.SupabaseStorageService;
 import com.example.carforum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
 @RequestMapping("/users")
 public class UserMvcController {
-    private static final String ALREADY_LOGGED_IN = "You are already logged in. Logout first to register another user.";
+    private static final String ALREADY_LOGGED_IN = "You are already logged in! Logout first!";
     private static final String LOGIN_CREDENTIALS_ERROR_MESSAGE = "Invalid username or password!";
 
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
     private final ModelMapper modelMapper;
+    private final SupabaseStorageService supabaseStorageService;
 
-    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, ModelMapper modelMapper) {
+    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, ModelMapper modelMapper, SupabaseStorageService supabaseStorageService) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.modelMapper = modelMapper;
+        this.supabaseStorageService = supabaseStorageService;
     }
 
     @GetMapping("/register")
@@ -116,15 +123,76 @@ public class UserMvcController {
 
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
+        try {
+            User currentUser = authenticationHelper.getCurrentUser(session);
+            UserUpdateDto dto = modelMapper.toDtoUpdate(currentUser);
+
+            String profilePictureUrl = null;
+
+            if (currentUser.getProfilePicturePath() != null && !currentUser.getProfilePicturePath().isBlank()) {
+                profilePictureUrl = "https://ktsfrevxaxezsmyuuier.supabase.co/storage/v1/object/public/uploads/" + currentUser.getProfilePicturePath();
+            }
+            model.addAttribute("userUpdateDto", dto);
+            model.addAttribute("currentUser", currentUser);
+            model.addAttribute("profilePictureUrl", profilePictureUrl);
+        } catch (ResponseStatusException e) {
+            return "redirect:/users/login";
+        }
+        return "ProfileView";
+    }
+
+    @PostMapping("/profile")
+    public String profile(@Valid @ModelAttribute("userUpdateDto") UserUpdateDto userUpdateDto,
+                          BindingResult bindingResult,
+                          HttpSession session,
+                          Model model) {
 
         User currentUser = authenticationHelper.getCurrentUser(session);
 
-        UserUpdateDto dto = modelMapper.toDtoUpdate(currentUser);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("currentUser", currentUser);
+            return "ProfileView";
+        }
 
-        model.addAttribute("userUpdateDto", dto);
-        model.addAttribute("currentUser", currentUser);
+        User userToUpdate = userService.getById(currentUser.getId());
 
-        return "ProfileView";
+
+        if (userToUpdate == null) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.value());
+            model.addAttribute("error", "User not found.");
+            return "ErrorView";
+        }
+
+        User userFromDto = modelMapper.fromDtoUpdate(userToUpdate, userUpdateDto);
+
+        userService.update(userFromDto);
+
+        model.addAttribute("currentUser", userFromDto);
+
+        return "redirect:/users/profile";
+    }
+
+    @PostMapping("/profile/picture")
+    public String uploadPicture(
+            @RequestParam("picture") MultipartFile picture,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) throws IOException {
+
+        try {
+            User currentUser = authenticationHelper.getCurrentUser(session);
+            String picturePath = supabaseStorageService.uploadFile(picture, currentUser.getId());
+            currentUser.setProfilePicturePath(picturePath);
+            userService.update(currentUser);
+            session.setAttribute("currentUser", currentUser);
+        } catch (ResponseStatusException e) {
+            return "redirect:/users/login";
+        }
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Profile picture updated successfully.");
+
+        return "redirect:/users/profile";
     }
 }
 

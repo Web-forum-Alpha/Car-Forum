@@ -2,50 +2,82 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" th:href="@{/style.css}">
+
     <title>Login</title>
 </head>
+
 <body>
 
-<h1>Login</h1>
+<header class="topbar">
+    <a class="logo" th:href="@{/}">
+        Car Forum
+    </a>
 
-<form th:action="@{/users/login}"
-      th:object="${loginDto}"
-      method="post">
+    <input type="checkbox"
+           id="menu-toggle"
+           class="menu-toggle-checkbox">
 
-    <div>
+    <label for="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
+    <nav class="nav-links">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/users/register}">Register</a>
+    </nav>
+</header>
+
+<div class="form-page">
+
+    <form th:action="@{/users/login}"
+          th:object="${loginDto}"
+          method="post">
+
+        <label>Login</label>
+
         <label for="username">Username</label>
 
         <input id="username"
                type="text"
                th:field="*{username}">
 
-        <p th:if="${#fields.hasErrors('username')}"
-           th:errors="*{username}">
-        </p>
-    </div>
+        <label class="error"
+               th:if="${#fields.hasErrors('username')}"
+               th:errors="*{username}">
+        </label>
 
-    <div>
+
         <label for="password">Password</label>
 
         <input id="password"
                type="password"
                th:field="*{password}">
 
-        <p th:if="${#fields.hasErrors('password')}"
-           th:errors="*{password}">
-        </p>
-    </div>
+        <label class="error"
+               th:if="${#fields.hasErrors('password')}"
+               th:errors="*{password}">
+        </label>
 
-    <p th:if="${errorMessage}"
-       th:text="${errorMessage}">
-    </p>
 
-    <button type="submit">Login</button>
+        <label class="error"
+               th:if="${errorMessage}"
+               th:text="${errorMessage}">
+        </label>
 
-    <a th:href="@{/users/register}">Register</a>
+        <input type="submit" value="Login">
 
-</form>
+        <a th:href="@{/users/register}">
+            Don't have an account? Register
+        </a>
+
+    </form>
+
+</div>
 
 </body>
 </html>

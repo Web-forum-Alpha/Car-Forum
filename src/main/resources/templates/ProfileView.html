@@ -64,15 +64,13 @@
     <section class="post-content">
 
         <div>
-            <img th:if="${currentUser.profilePicturePath != null
-                         and !currentUser.profilePicturePath.isBlank()}"
-                 th:src="${currentUser.profilePicturePath}"
+            <img th:if="${profilePictureUrl != null}"
+                 th:src="${profilePictureUrl}"
                  alt="Profile picture"
                  width="180"
                  height="180">
 
-            <p th:unless="${currentUser.profilePicturePath != null
-                          and !currentUser.profilePicturePath.isBlank()}">
+            <p th:unless="${profilePictureUrl != null}">
                 No profile picture uploaded.
             </p>
         </div>
@@ -112,6 +110,17 @@
                 </span>
             </div>
         </div>
+
+        <div class="row">
+            <div class="post-general-info">
+                <strong>Password</strong>
+
+                <span th:text="${currentUser.password}">
+                    Password
+                </span>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="post-general-info">
@@ -171,6 +180,20 @@
 
                 <p th:if="${#fields.hasErrors('lastName')}"
                    th:errors="*{lastName}">
+                </p>
+            </div>
+
+            <div>
+                <label for="password">
+                    Password
+                </label>
+
+                <input id="password"
+                       type="text"
+                       th:field="*{password}">
+
+                <p th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}">
                 </p>
             </div>
 
