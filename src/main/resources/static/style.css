@@ -766,3 +766,22 @@ h2 {
 .delete-btn:hover {
     background: #fbe1e8;
 }
+
+.form-page form textarea {
+    resize: vertical;
+    min-height: 120px;
+    padding: 12px 16px;
+    border: 1px solid #e3e7ef;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #3a3f4b;
+    background: #f7f9fc;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.form-page form textarea:focus {
+    border-color: #a9b6ff;
+    background: #ffffff;
+}
