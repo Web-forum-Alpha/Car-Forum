@@ -15,7 +15,7 @@
     <div class="nav-links">
         <a th:href="@{/posts}">Posts</a>
         <a th:href="@{/posts/new}">New Post</a>
-        <a th:if="${user != null}" th:href="@{/users/profile}" class="account-btn">Account</a>
+        <a th:if="${user != null}" th:href="@{/users/profile}" class="account-btn">My Profile</a>
         <a th:if="${user != null}" th:href="@{/users/logout}">Logout</a>
         <a th:unless="${user != null}" th:href="@{/users/login}">Login</a>
         <a th:unless="${user != null}" th:href="@{/users/register}">Register</a>
