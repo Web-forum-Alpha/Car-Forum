@@ -281,4 +281,28 @@ public class PostMvcController {
     }
 
 
+    @PostMapping("/{postId}/delete")
+    public String deletePost(@PathVariable int postId,Model model, HttpSession session){
+
+        User user;
+        try{
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+            return "redirect:/users/login";
+        }
+
+        try{
+            postService.deleteById(postId, user);
+
+            return "redirect:/posts";
+
+        }catch (EntityNotFoundException e){
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+
+    }
+
+
 }
