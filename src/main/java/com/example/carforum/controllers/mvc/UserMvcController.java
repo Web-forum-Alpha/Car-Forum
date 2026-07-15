@@ -28,6 +28,7 @@ import java.util.List;
 public class UserMvcController {
     private static final String ALREADY_LOGGED_IN = "You are already logged in! Logout first!";
     private static final String LOGIN_CREDENTIALS_ERROR_MESSAGE = "Invalid username or password!";
+    private static final String ACCESS_ERROR_MESSAGE = "You are not authorized to browse user information.";
 
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
@@ -39,6 +40,49 @@ public class UserMvcController {
         this.authenticationHelper = authenticationHelper;
         this.modelMapper = modelMapper;
         this.supabaseStorageService = supabaseStorageService;
+    }
+
+    @GetMapping("/admin")
+    public String admin(HttpSession session, Model model) {
+        if (!authenticationHelper.isLoggedIn(session) || !authenticationHelper.isAdmin(session)) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
+            model.addAttribute("error", ACCESS_ERROR_MESSAGE);
+            return "ErrorView";
+        }
+        List<User> users = userService.getAll();
+        model.addAttribute("users", users);
+
+        return "AdminPanelView";
+    }
+
+    @PostMapping("/{userId}/block")
+    public String block(@PathVariable int userId, HttpSession session, Model model) {
+        if (!authenticationHelper.isLoggedIn(session) || !authenticationHelper.isAdmin(session)) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
+            model.addAttribute("error", ACCESS_ERROR_MESSAGE);
+            return "ErrorView";
+        }
+
+        User user = authenticationHelper.getCurrentUser(session);
+        User userToUpdate = userService.getById(userId);
+        userService.setBlock(userToUpdate, user, true);
+
+        return "redirect:/users/admin";
+    }
+
+    @PostMapping("/{userId}/unblock")
+    public String unblock(@PathVariable int userId, HttpSession session, Model model) {
+        if (!authenticationHelper.isLoggedIn(session) || !authenticationHelper.isAdmin(session)) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
+            model.addAttribute("error", ACCESS_ERROR_MESSAGE);
+            return "ErrorView";
+        }
+
+        User user = authenticationHelper.getCurrentUser(session);
+        User userToUpdate = userService.getById(userId);
+        userService.setBlock(userToUpdate, user, false);
+
+        return "redirect:/users/admin";
     }
 
     @GetMapping("/register")
@@ -117,7 +161,7 @@ public class UserMvcController {
 
         session.setAttribute("currentUser", user);
         model.addAttribute("currentUser", user);
-        return "redirect:/users/profile";
+        return "redirect:/";
     }
 
 
@@ -134,6 +178,7 @@ public class UserMvcController {
             }
             model.addAttribute("userUpdateDto", dto);
             model.addAttribute("currentUser", currentUser);
+            model.addAttribute("user", currentUser);
             model.addAttribute("profilePictureUrl", profilePictureUrl);
         } catch (ResponseStatusException e) {
             return "redirect:/users/login";
@@ -194,5 +239,6 @@ public class UserMvcController {
 
         return "redirect:/users/profile";
     }
+
 }
 
