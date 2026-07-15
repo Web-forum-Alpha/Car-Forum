@@ -10,7 +10,6 @@ import com.example.carforum.services.LikeService;
 import com.example.carforum.services.PostService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.buf.UEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -43,7 +42,13 @@ public class PostMvcController {
     }
 
     @GetMapping
-    public String getAllPosts(Model model, HttpSession session){
+    public String getAllPosts(@RequestParam(required = false) String title,
+                              @RequestParam(required = false) String username,
+                              @RequestParam(required = false) Integer likes,
+                              @RequestParam(required = false) Integer comments,
+                              @RequestParam(required = false) String sortBy,
+                              @RequestParam(required = false) String orderBy,
+                              Model model, HttpSession session){
 
         User user;
         try {
@@ -53,8 +58,10 @@ public class PostMvcController {
             return "redirect:/users/login";
         }
 
+        FilterOptions filterOptions = new FilterOptions(title, username,likes, comments, sortBy, orderBy);
+
         model.addAttribute("user", user);
-        model.addAttribute("posts", postService.getAll());
+        model.addAttribute("posts", postService.getAll(filterOptions));
         return "PostsView";
     }
 

@@ -4,10 +4,7 @@ import com.example.carforum.exceptions.EntityDuplicateException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.helpers.ModelMapper;
-import com.example.carforum.models.Like;
-import com.example.carforum.models.Post;
-import com.example.carforum.models.PostDto;
-import com.example.carforum.models.User;
+import com.example.carforum.models.*;
 import com.example.carforum.services.LikeService;
 import com.example.carforum.services.PostService;
 import jakarta.servlet.http.HttpSession;
@@ -37,9 +34,17 @@ public class PostRestController {
     }
 
     @GetMapping()
-    public List<Post> getAll(HttpSession session) {
+    public List<Post> getAll(@RequestParam(required = false) String title,
+                             @RequestParam(required = false) String username,
+                             @RequestParam(required = false) Integer likes,
+                             @RequestParam(required = false) Integer comments,
+                             @RequestParam(required = false) String sortBy,
+                             @RequestParam(required = false) String orderBy,
+                             HttpSession session) {
         authenticationHelper.getCurrentUser(session);
-        return postService.getAll();
+
+        FilterOptions filterOptions = new FilterOptions(title, username, likes, comments, sortBy, orderBy);
+        return postService.getAll(filterOptions);
     }
 
     @GetMapping("/{id}")
