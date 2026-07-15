@@ -10,12 +10,8 @@
 </head>
 
 <body>
-
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 <header class="topbar">
-    <a class="logo" th:href="@{/}">
-        Car Forum
-    </a>
-
     <input type="checkbox"
            id="menu-toggle"
            class="menu-toggle-checkbox">
@@ -25,11 +21,6 @@
         <span></span>
         <span></span>
     </label>
-
-    <nav class="nav-links">
-        <a th:href="@{/}">Home</a>
-        <a th:href="@{/posts}">Posts</a>
-    </nav>
 </header>
 
 <main class="body-content">

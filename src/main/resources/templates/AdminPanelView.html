@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" th:href="@{/style.css}">
+
+    <title>Admin Panel</title>
+</head>
+
+<body>
+
+<header class="topbar">
+    <a class="logo" th:href="@{/}">
+        Car Forum
+    </a>
+
+    <input type="checkbox"
+           id="menu-toggle"
+           class="menu-toggle-checkbox">
+
+    <label for="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
+    <nav class="nav-links">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/posts}">Posts</a>
+        <a th:href="@{/users/profile}">My Profile</a>
+        <a class="account-btn" th:href="@{/users/admin}">
+            Admin Panel
+        </a>
+    </nav>
+</header>
+
+<main class="body-content">
+
+    <section class="post-header">
+        <h1>Admin Panel</h1>
+
+        <a th:href="@{/}">
+            Back to Home
+        </a>
+    </section>
+
+    <div th:if="${successMessage}"
+         class="post-general-info row">
+
+        <span th:text="${successMessage}">
+            Operation completed successfully.
+        </span>
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="post-general-info row">
+
+        <span th:text="${errorMessage}">
+            Something went wrong.
+        </span>
+    </div>
+
+    <h2>All Users</h2>
+
+    <section th:if="${users != null and !users.isEmpty()}">
+
+        <div class="row"
+             th:each="user : ${users}">
+
+            <div class="post-general-info">
+
+                <strong th:text="${user.username}">
+                    Username
+                </strong>
+
+                <span>
+                    ID:
+                    <span th:text="${user.id}">1</span>
+                </span>
+
+                <span>
+                    Name:
+                    <span th:text="${user.firstName + ' ' + user.lastName}">
+                        First Last
+                    </span>
+                </span>
+
+                <span>
+                    Email:
+                    <span th:text="${user.email}">
+                        email@example.com
+                    </span>
+                </span>
+
+                <span>
+                    Phone:
+                    <span th:text="${user.phoneNumber != null
+                                    and !user.phoneNumber.isBlank()
+                                    ? user.phoneNumber
+                                    : 'Not provided'}">
+                        Not provided
+                    </span>
+                </span>
+
+                <span>
+                    Role:
+                    <strong th:text="${user.admin ? 'Administrator' : 'User'}">
+                        User
+                    </strong>
+                </span>
+
+                <span>
+                    Status:
+                    <strong th:text="${user.blocked ? 'Blocked' : 'Active'}">
+                        Active
+                    </strong>
+                </span>
+
+                <section class="post-likes">
+
+                    <form th:if="${!user.blocked}"
+                          th:action="@{/users/{userId}/block(userId=${user.id})}"
+                          method="post">
+
+                        <button class="like-btn not-liked"
+                                type="submit">
+                            Block
+                        </button>
+                    </form>
+
+                    <form th:if="${user.blocked}"
+                          th:action="@{/users/{userId}/unblock(userId=${user.id})}"
+                          method="post">
+
+                        <button class="like-btn liked"
+                                type="submit">
+                            Unblock
+                        </button>
+                    </form>
+
+                    <form th:action="@{/users/admin/{userId}/delete(userId=${user.id})}"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to delete this user?');">
+
+                        <button class="like-btn not-liked"
+                                type="submit">
+                            Delete
+                        </button>
+                    </form>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div th:if="${users == null or users.isEmpty()}">
+        <h2>No users found.</h2>
+    </div>
+
+</main>
+
+</body>
+</html>
