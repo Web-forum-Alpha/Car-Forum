@@ -85,6 +85,18 @@ public class UserMvcController {
         return "redirect:/users/admin";
     }
 
+    @PostMapping("/{userId}")
+    public String deleteById(@PathVariable int userId, HttpSession session, Model model) {
+        if (!authenticationHelper.isLoggedIn(session) || !authenticationHelper.isAdmin(session)) {
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
+            model.addAttribute("error", ACCESS_ERROR_MESSAGE);
+            return "ErrorView";
+        }
+        User user = userService.getById(userId);
+        userService.delete(user);
+        return "redirect:/users/admin";
+    }
+
     @GetMapping("/register")
     public String register(HttpSession session, Model model) {
         if (authenticationHelper.isLoggedIn(session)) {
@@ -164,6 +176,12 @@ public class UserMvcController {
         return "redirect:/";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
 
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
@@ -193,14 +211,7 @@ public class UserMvcController {
                           Model model) {
 
         User currentUser = authenticationHelper.getCurrentUser(session);
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("currentUser", currentUser);
-            return "ProfileView";
-        }
-
         User userToUpdate = userService.getById(currentUser.getId());
-
 
         if (userToUpdate == null) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.value());
@@ -209,6 +220,17 @@ public class UserMvcController {
         }
 
         User userFromDto = modelMapper.fromDtoUpdate(userToUpdate, userUpdateDto);
+
+        List<User> usersByEmail = userService.search(null, userFromDto.getEmail(), null);
+
+        if (!usersByEmail.isEmpty()) {
+            bindingResult.rejectValue("email", "email", "Email already exists.");
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("currentUser", currentUser);
+            return "ProfileView";
+        }
 
         userService.update(userFromDto);
 
