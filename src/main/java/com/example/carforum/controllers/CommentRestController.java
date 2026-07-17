@@ -81,7 +81,7 @@ public class CommentRestController {
             if (authenticationHelper.isLoggedInNonAdmin(session) && user.getId() != comment.getUser().getId()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
             }
-            service.update(comment);
+            service.update(comment, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -98,6 +98,6 @@ public class CommentRestController {
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        service.deleteById(id);
+        service.deleteById(id, user);
     }
 }

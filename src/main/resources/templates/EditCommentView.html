@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Edit Comment</title>
+</head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="form-page">
+    <form action="#"
+          th:action="@{/posts/{postId}/comments/{commentId}/edit(postId=${postId}, commentId=${commentId})}"
+          th:object="${commentDto}" method="post">
+
+        <label>Edit Comment</label>
+        <br>
+        <textarea th:field="*{content}"></textarea>
+        <label class="error" th:errors="*{content}">Name of error</label>
+        <br><br>
+
+        <input type="submit" value="Save"/>
+
+    </form>
+</div>
+
+</body>
+</html>

@@ -21,9 +21,9 @@
     <div class="post-likes">
         <form action="#" th:action="@{/posts/{postId}/like(postId=${postDetails.post.id})}" method="post">
             <button type="submit"
-            class="like-btn"
-            th:classappend="${postDetails.liked} ? 'liked' : 'not-liked'"
-            th:text="${postDetails.liked} ? 'Liked' : 'Like'">
+                    class="like-btn"
+                    th:classappend="${postDetails.liked} ? 'liked' : 'not-liked'"
+                    th:text="${postDetails.liked} ? 'Liked' : 'Like'">
                 Like
             </button>
         </form>
@@ -42,18 +42,28 @@
         <h2>Comments</h2>
     </div>
     <div class="comment-section">
-    <div class="add-comment">
-        <form action="#" th:action="@{/posts/{postId}/comment(postId=${postDetails.post.id})}"
-              th:object="${commentDto}" method="post">
-            <textarea th:field="*{content}" placeholder="Write a comment..." required></textarea>
-            <button type="submit">Post comment</button>
-        </form>
-    </div>
-    <div class="post-comments" th:each="comment : ${postDetails.comments}">
-        <a th:href="@{/posts}" th:text="${comment.user.username}">Commentator</a>
-        <p th:text="${comment.content}">Content</p>
-    </div>
-    <p th:if="${postDetails.comments.isEmpty()}">No comments yet!</p>
+        <div class="add-comment">
+            <form action="#" th:action="@{/posts/{postId}/comment(postId=${postDetails.post.id})}"
+                  th:object="${commentDto}" method="post">
+                <textarea th:field="*{content}" placeholder="Write a comment..." required></textarea>
+                <button type="submit">Post comment</button>
+            </form>
+        </div>
+        <div class="post-comments" th:each="comment : ${postDetails.comments}">
+            <a th:href="@{/posts}" th:text="${comment.user.username}">Commentator</a>
+            <p th:text="${comment.content}">Content</p>
+
+            <a th:if="${user != null and (user.id == comment.user.id or user.admin)}"
+               th:href="@{/posts/{postId}/comments/{commentId}/edit(postId=${postDetails.post.id}, commentId=${comment.id})}"
+               class="edit-comment-link">Edit</a>
+            <form th:if="${user != null and (user.id == comment.user.id or user.admin)}"
+                  th:action="@{/posts/{postId}/comments/{commentId}/delete(postId=${postDetails.post.id}, commentId=${comment.id})}"
+                  method="post"
+                  style="display: inline;">
+                <button type="submit" class="delete-comment-link">Delete</button>
+            </form>
+        </div>
+        <p th:if="${postDetails.comments.isEmpty()}">No comments yet!</p>
 
 
     </div>

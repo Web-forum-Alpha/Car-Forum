@@ -112,6 +112,14 @@ public class ModelMapper {
         return comment;
     }
 
+    public CommentDto toDtoUpdate(Comment comment){
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setContent(comment.getContent());
+
+        return commentDto;
+    }
+
     //LIKE DTO
 
     public Like fromDtoCreate(int postId, User user){
