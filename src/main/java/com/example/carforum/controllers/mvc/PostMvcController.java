@@ -90,7 +90,6 @@ public class PostMvcController {
             model.addAttribute("postDetails", dto);
             model.addAttribute("commentDto", new CommentDto());
 
-
             return "PostView";
         }catch (EntityNotFoundException e){
             model.addAttribute("error", e.getMessage());
@@ -300,6 +299,99 @@ public class PostMvcController {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
+        }
+
+    }
+
+    @GetMapping("/{postId}/comments/{commentId}/edit")
+    public String showEditCommentPage(@PathVariable int postId, @PathVariable int commentId,
+                                      Model model,
+                                      HttpSession session){
+
+        User user;
+        try {
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+            return "redirect:/users/login";
+        }
+
+        Comment comment = commentService.getById(commentId);
+
+        if (!(comment.getUser().getId() == user.getId() || user.isAdmin())){
+
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to edit this comment");
+        }
+        CommentDto commentDto = mapper.toDtoUpdate(comment);
+
+        model.addAttribute("commentDto", commentDto);
+        model.addAttribute("postId", postId);
+        model.addAttribute("commentId", commentId);
+
+        return "EditCommentView";
+
+    }
+
+
+    @PostMapping("/{postId}/comments/{commentId}/edit")
+    public String editComment(@PathVariable int postId, @PathVariable int commentId,
+                                HttpSession session, Model model,
+                                @Valid @ModelAttribute("commentDto") CommentDto commentDto,
+                              BindingResult bindingResult){
+
+        User user;
+        try {
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+            return "redirect:/users/login";
+        }
+
+        if (bindingResult.hasErrors()){
+            return "EditCommentView";
+        }
+        try{
+            Comment comment = commentService.getById(commentId);
+            comment.setContent(commentDto.getContent());
+            commentService.update(comment, user);
+
+            return "redirect:/posts/{postId}";
+        }catch (EntityNotFoundException e){
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }catch (AuthorizationException e){
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+
+        }
+
+
+    }
+
+    @PostMapping("/{postId}/comments/{commentId}/delete")
+    public String deleteComment(@PathVariable int postId, @PathVariable int commentId,
+                                HttpSession session, Model model){
+
+        User user;
+        try{
+            user = authenticationHelper.getCurrentUser(session);
+        }catch (ResponseStatusException e){
+            return "redirect:/users/login";
+        }
+
+        try {
+            commentService.deleteById(commentId, user);
+            return "redirect:/posts/{postId}";
+
+        }catch (EntityNotFoundException e){
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }catch (AuthorizationException e){
+            model.addAttribute("statusCode", HttpStatus.FORBIDDEN.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+
         }
 
     }

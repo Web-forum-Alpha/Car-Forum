@@ -3,6 +3,8 @@ package com.example.carforum.services;
 import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.models.Comment;
+import com.example.carforum.models.Post;
+import com.example.carforum.models.User;
 import com.example.carforum.repositories.CommentRepository;
 import com.example.carforum.repositories.PostRepository;
 import com.example.carforum.repositories.UserRepository;
@@ -17,6 +19,8 @@ public class CommentServiceImpl implements CommentService {
 
     private static final String NOT_FOUND_MESSAGE = "%s with %d id was not found!";
     private static final String BLOCKED_USER_MESSAGE = "You are not authorized to create comments!";
+    public static final String DELETE_MESSAGE_ERROR = "You are not authorized to delete this comment!";
+    public static final String UPDATE_MESSAGE_COMMENT = "You are not authorized to edit this comment!";
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
@@ -81,18 +85,30 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void update(Comment comment) {
+    public void update(Comment comment, User user) {
 
+        checkModifyPermission(comment, user, UPDATE_MESSAGE_COMMENT);
         commentRepository.update(comment);
 
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(int id, User user) {
 
         Comment comment = getById(id);
 
+        checkModifyPermission(comment, user, DELETE_MESSAGE_ERROR);
+
         commentRepository.delete(comment);
+
+    }
+
+    private void checkModifyPermission(Comment comment, User user, String errorToThrow) {
+
+        if (!(comment.getUser().getUsername().equals(user.getUsername()) || user.isAdmin())) {
+
+            throw new AuthorizationException(errorToThrow);
+        }
 
     }
 }
