@@ -43,13 +43,26 @@ public class UserMvcController {
     }
 
     @GetMapping("/admin")
-    public String admin(HttpSession session, Model model) {
+    public String admin(
+            HttpSession session,
+            Model model,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String firstName) {
+
         if (!authenticationHelper.isLoggedIn(session) || !authenticationHelper.isAdmin(session)) {
             model.addAttribute("statusCode", HttpStatus.FORBIDDEN.value());
             model.addAttribute("error", ACCESS_ERROR_MESSAGE);
             return "ErrorView";
         }
-        List<User> users = userService.getAll();
+
+        List<User> users;
+
+        if ((username == null || username.isBlank()) && (email == null || email.isBlank()) && (firstName == null || firstName.isBlank())) {
+            users = userService.getAll();
+        } else {
+            users = userService.search(username, email, firstName);
+        }
         model.addAttribute("users", users);
 
         return "AdminPanelView";

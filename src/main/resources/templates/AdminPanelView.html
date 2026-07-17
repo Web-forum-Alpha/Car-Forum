@@ -62,6 +62,59 @@
         </span>
     </div>
 
+    <h2>Search Users</h2>
+
+    <section class="add-comment">
+
+        <form th:action="@{/users/admin}"
+              method="get">
+
+            <div>
+                <label for="username">
+                    Username
+                </label>
+
+                <input id="username"
+                       type="text"
+                       name="username"
+                       th:value="${param.username}">
+            </div>
+
+            <div>
+                <label for="email">
+                    Email
+                </label>
+
+                <input id="email"
+                       type="email"
+                       name="email"
+                       th:value="${param.email}">
+            </div>
+
+            <div>
+                <label for="firstName">
+                    First Name
+                </label>
+
+                <input id="firstName"
+                       type="text"
+                       name="firstName"
+                       th:value="${param.firstName}">
+            </div>
+
+            <button type="submit">
+                Search
+            </button>
+
+            <a class="like-btn not-liked"
+               th:href="@{/users/admin}">
+                Clear
+            </a>
+
+        </form>
+
+    </section>
+
     <h2>All Users</h2>
 
     <section th:if="${users != null and !users.isEmpty()}">
