@@ -1,7 +1,5 @@
 package com.example.carforum.controllers;
 
-import com.example.carforum.exceptions.EntityDuplicateException;
-import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.helpers.ModelMapper;
 import com.example.carforum.models.*;
@@ -58,11 +56,9 @@ public class PostRestController {
     @GetMapping("/{id}")
     public Post getById(@PathVariable int id, HttpSession session) {
         authenticationHelper.getCurrentUser(session);
-        try {
-            return postService.getById(id);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+
+        return postService.getById(id);
+
     }
 
     @Operation(summary = "Creates a Post.")
@@ -90,11 +86,9 @@ public class PostRestController {
         }
 
         Post post = mapper.fromDtoUpdate(id, postDto);
-        try {
-            postService.update(post, user);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+
+        postService.update(post, user);
+
     }
 
     @Operation(summary = "Deletes a Post by its Id.")
@@ -107,51 +101,43 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, USER_BLOCKED_MESSAGE);
         }
 
-        try {
-            postService.deleteById(id, user);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+
+        postService.deleteById(id, user);
+
     }
 
     @Operation(summary = "Returns the count of likes of a Post.")
     @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping("/{postId}/likes")
-    public int getPostLikesCount(@PathVariable int postId){
-        try {
-            return likeService.getLikesCount(postId);
-        }catch (EntityNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public int getPostLikesCount(@PathVariable int postId) {
+
+        return likeService.getLikesCount(postId);
+
     }
 
     @Operation(summary = "Creates a like for a Post.")
     @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping("/{postId}/likes")
-    public void crateLike(@PathVariable int postId, HttpSession session){
+    public void crateLike(@PathVariable int postId, HttpSession session) {
 
-        try{
-            User user = authenticationHelper.getCurrentUser(session);
-            Like like = mapper.fromDtoCreate(postId, user);
-            likeService.create(like);
-        }catch (EntityDuplicateException e){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+
+        User user = authenticationHelper.getCurrentUser(session);
+        Like like = mapper.fromDtoCreate(postId, user);
+        likeService.create(like);
+
 
     }
 
     @Operation(summary = "Deletes a like for Post.")
     @ApiResponse(responseCode = "200", description = "Successes")
     @DeleteMapping("/{postId}/likes")
-    public void deleteLike(@PathVariable int postId, HttpSession session){
+    public void deleteLike(@PathVariable int postId, HttpSession session) {
 
-        try{
-            User user = authenticationHelper.getCurrentUser(session);
-            Like like = mapper.fromDtoDelete(postId, user);
-            likeService.delete(like);
-        }catch (EntityNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+
+        User user = authenticationHelper.getCurrentUser(session);
+        Like like = mapper.fromDtoDelete(postId, user);
+        likeService.delete(like);
+
 
     }
 
