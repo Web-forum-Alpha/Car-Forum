@@ -8,6 +8,9 @@ import com.example.carforum.models.UserCreateDto;
 import com.example.carforum.models.UserUpdateDto;
 import com.example.carforum.services.SupabaseStorageServiceImpl;
 import com.example.carforum.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name ="Manage Users", description = "Crud operations for User")
 public class UserRestController {
     private static final String LOGIN_CREDENTIALS_ERROR_MESSAGE = "Invalid username or password!";
     private static final String ALREADY_LOGGED_IN_ERROR_MESSAGE = "You are already logged in!";
@@ -44,6 +48,8 @@ public class UserRestController {
         this.authenticationHelper = authenticationHelper;
     }
 
+    @Operation(summary = "Returns all users.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping
     public List<User> getAll(HttpSession session) {
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
@@ -52,6 +58,8 @@ public class UserRestController {
         return userService.getAll();
     }
 
+    @Operation(summary = "Returns a user by its Id")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping("/{userId}")
     public User getById(@PathVariable int userId, HttpSession session) {
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
@@ -64,6 +72,8 @@ public class UserRestController {
         return user;
     }
 
+    @Operation(summary = "Updates a user by its Id")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PutMapping("/{userId}")
     public void updateById(@PathVariable int userId, @Valid @RequestBody UserUpdateDto userUpdateDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
@@ -83,6 +93,8 @@ public class UserRestController {
         session.setAttribute("currentUser", userToUpdate);
     }
 
+    @Operation(summary = "Blocks a user by its Id")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PutMapping("/{userId}/block")
     public void blockUser(@PathVariable int userId, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
@@ -95,6 +107,8 @@ public class UserRestController {
         userService.setBlock(userToUpdate, user, true);
     }
 
+    @Operation(summary = "Unblock user by its Id")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PutMapping("/{userId}/unblock")
     public void unblockUser(@PathVariable int userId, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
@@ -107,6 +121,8 @@ public class UserRestController {
         userService.setBlock(userToUpdate, user, false);
     }
 
+    @Operation(summary = "Upload a picture by user Id")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping("/{userId}/picture")
     public void uploadPicture(@PathVariable int userId, @RequestParam("picture") MultipartFile picture, HttpSession session) throws IOException {
 
@@ -129,6 +145,8 @@ public class UserRestController {
         userService.update(user);
     }
 
+    @Operation(summary = "Deletes user by its Id.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @DeleteMapping("/{userId}")
     public void deleteById(@PathVariable int userId, HttpSession session) {
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
@@ -143,6 +161,8 @@ public class UserRestController {
         userService.delete(user);
     }
 
+    @Operation(summary = "Filter users by username, email or first name.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping("/search")
     public List<User> getByUsername(@RequestParam(required = false) String username,
                                     @RequestParam(required = false) String email,
@@ -165,7 +185,8 @@ public class UserRestController {
         return users;
     }
 
-
+    @Operation(summary = "Register a user.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping("/register")
     public void create(@Valid @RequestBody UserCreateDto userCreateDto, HttpSession session) {
         if (authenticationHelper.isLoggedInNonAdmin(session)) {
@@ -184,6 +205,8 @@ public class UserRestController {
         userService.create(user);
     }
 
+    @Operation(summary = "Login user.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping("/login")
     public void login(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
         if (authenticationHelper.isLoggedIn(session)) {
@@ -200,6 +223,8 @@ public class UserRestController {
         session.setAttribute("currentUser", user);
     }
 
+    @Operation(summary = "Logout user.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping("/logout")
     public void logout(HttpSession session) {
         if (!authenticationHelper.isLoggedIn(session)) {
