@@ -38,3 +38,6 @@ out/
 
 # Local database configuration
 src/main/resources/application-local.properties
+
+.DS_Store
+**/.DS_Store
