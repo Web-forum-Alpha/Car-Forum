@@ -34,12 +34,13 @@ public class HomeController {
     public String showHomePage(Model model, HttpSession session){
 
         User user;
-        try {
-            user = authenticationHelper.getCurrentUser(session);
-        }catch (AuthorizationException e){
 
+        if (authenticationHelper.isLoggedIn(session)){
+            user = authenticationHelper.getCurrentUser(session);
+        }else {
             user = null;
         }
+
 
         model.addAttribute("postsCount", postService.getCountPosts());
         model.addAttribute("usersCount",userService.getCountUsers());
