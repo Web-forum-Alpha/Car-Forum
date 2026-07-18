@@ -17,4 +17,6 @@ public class GlobalRestExceptionHandler {
     public String handleAuthorizationException(AuthorizationException e){
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
+
+
 }
