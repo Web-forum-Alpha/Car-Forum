@@ -1,6 +1,5 @@
 package com.example.carforum.controllers.mvc;
 
-import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.models.User;
 import com.example.carforum.services.PostService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping()
