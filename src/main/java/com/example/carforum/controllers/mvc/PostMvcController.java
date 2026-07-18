@@ -1,5 +1,6 @@
 package com.example.carforum.controllers.mvc;
 
+import com.example.carforum.exceptions.AuthenticationException;
 import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.exceptions.EntityNotFoundException;
 import com.example.carforum.helpers.AuthenticationHelper;
@@ -53,7 +54,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
 
             return "redirect:/users/login";
         }
@@ -71,7 +72,7 @@ public class PostMvcController {
         User user;
        try{
            user = authenticationHelper.getCurrentUser(session);
-       }catch (ResponseStatusException e){
+       }catch (AuthenticationException e){
 
            return "redirect:/users/login";
        }
@@ -106,7 +107,7 @@ public class PostMvcController {
 
             user = authenticationHelper.getCurrentUser(session);
 
-        }catch (ResponseStatusException e){
+        }catch (AuthenticationException e){
 
             return "redirect:/users/login";
         }
@@ -126,7 +127,7 @@ public class PostMvcController {
         try{
             user = authenticationHelper.getCurrentUser(session);
 
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
             return "redirect:/users/login";
         }
 
@@ -159,7 +160,7 @@ public class PostMvcController {
         User user;
         try{
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthenticationException e){
             return "redirect:/users/login";
         }
 
@@ -198,7 +199,7 @@ public class PostMvcController {
         try{
            user = authenticationHelper.getCurrentUser(session);
 
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
 
             return "redirect:/users/login";
         }
@@ -232,7 +233,7 @@ public class PostMvcController {
         User user;
         try{
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
 
             return "redirect:/users/login";
         }
@@ -256,7 +257,7 @@ public class PostMvcController {
         User user;
         try{
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
             return "redirect:/users/login";
         }
 
@@ -286,7 +287,7 @@ public class PostMvcController {
         User user;
         try{
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
             return "redirect:/users/login";
         }
 
@@ -311,7 +312,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
             return "redirect:/users/login";
         }
 
@@ -341,7 +342,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
             return "redirect:/users/login";
         }
 
@@ -375,7 +376,7 @@ public class PostMvcController {
         User user;
         try{
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
             return "redirect:/users/login";
         }
 
