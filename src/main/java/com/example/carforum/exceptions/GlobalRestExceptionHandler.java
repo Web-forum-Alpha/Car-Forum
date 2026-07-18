@@ -18,5 +18,15 @@ public class GlobalRestExceptionHandler {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
+    @ExceptionHandler
+    public String handleEntityNotFoundException(EntityNotFoundException e){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+    @ExceptionHandler
+    public String handleEntityDuplicateException(EntityDuplicateException e){
+        throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+
 
 }

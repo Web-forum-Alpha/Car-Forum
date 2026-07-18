@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
-@Tag(name ="Manage comments", description = "CRUD operations for Comments")
+@Tag(name = "Manage comments", description = "CRUD operations for Comments")
 public class CommentRestController {
     private static final String ACCESS_ERROR_MESSAGE = "You are not authorized to update/delete comments from other users";
     private final CommentService service;
@@ -47,11 +47,9 @@ public class CommentRestController {
     @GetMapping("/{id}")
     public Comment getById(@PathVariable int id, HttpSession session) {
         authenticationHelper.getCurrentUser(session);
-        try {
-            return service.getById(id);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+
+        return service.getById(id);
+
     }
 
     @Operation(summary = "Returns all comments by User's Id.")
@@ -59,11 +57,7 @@ public class CommentRestController {
     @GetMapping("/user/{id}")
     public List<Comment> getAllByUserId(@PathVariable int id, HttpSession session) {
         authenticationHelper.getCurrentUser(session);
-        try {
-            return service.getByUserId(id);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return service.getByUserId(id);
     }
 
     @Operation(summary = "Returns all comments by Post's Id")
@@ -71,11 +65,7 @@ public class CommentRestController {
     @GetMapping("/post/{id}")
     public List<Comment> getAllByPostId(@PathVariable int id, HttpSession session) {
         authenticationHelper.getCurrentUser(session);
-        try {
-            return service.getByPostId(id);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return service.getByPostId(id);
     }
 
     @Operation(summary = "Creates a comment")
@@ -92,15 +82,11 @@ public class CommentRestController {
     @PutMapping("/{id}")
     public void update(@PathVariable int id, @Valid @RequestBody CommentDto commentDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
-        try {
-            Comment comment = mapper.fromDtoUpdate(id, commentDto);
-            if (authenticationHelper.isLoggedInNonAdmin(session) && user.getId() != comment.getUser().getId()) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
-            }
-            service.update(comment, user);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        Comment comment = mapper.fromDtoUpdate(id, commentDto);
+        if (authenticationHelper.isLoggedInNonAdmin(session) && user.getId() != comment.getUser().getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
         }
+        service.update(comment, user);
     }
 
     @Operation(summary = "Deletes a comment by its Id.")
@@ -108,13 +94,9 @@ public class CommentRestController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
-        try {
-            Comment comment = service.getById(id);
-            if (authenticationHelper.isLoggedInNonAdmin(session) && user.getId() != comment.getUser().getId()) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
-            }
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        Comment comment = service.getById(id);
+        if (authenticationHelper.isLoggedInNonAdmin(session) && user.getId() != comment.getUser().getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ACCESS_ERROR_MESSAGE);
         }
         service.deleteById(id, user);
     }
