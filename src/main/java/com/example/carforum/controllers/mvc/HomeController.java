@@ -1,5 +1,6 @@
 package com.example.carforum.controllers.mvc;
 
+import com.example.carforum.exceptions.AuthorizationException;
 import com.example.carforum.helpers.AuthenticationHelper;
 import com.example.carforum.models.User;
 import com.example.carforum.services.PostService;
@@ -35,7 +36,7 @@ public class HomeController {
         User user;
         try {
             user = authenticationHelper.getCurrentUser(session);
-        }catch (ResponseStatusException e){
+        }catch (AuthorizationException e){
 
             user = null;
         }
