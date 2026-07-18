@@ -10,14 +10,12 @@ import com.example.carforum.services.SupabaseStorageService;
 import com.example.carforum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -198,22 +196,20 @@ public class UserMvcController {
 
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
-        try {
-            User currentUser = authenticationHelper.getCurrentUser(session);
-            UserUpdateDto dto = modelMapper.toDtoUpdate(currentUser);
 
-            String profilePictureUrl = null;
+        User currentUser = authenticationHelper.getCurrentUser(session);
+        UserUpdateDto dto = modelMapper.toDtoUpdate(currentUser);
 
-            if (currentUser.getProfilePicturePath() != null && !currentUser.getProfilePicturePath().isBlank()) {
-                profilePictureUrl = "https://ktsfrevxaxezsmyuuier.supabase.co/storage/v1/object/public/uploads/" + currentUser.getProfilePicturePath();
-            }
-            model.addAttribute("userUpdateDto", dto);
-            model.addAttribute("currentUser", currentUser);
-            model.addAttribute("user", currentUser);
-            model.addAttribute("profilePictureUrl", profilePictureUrl);
-        } catch (ResponseStatusException e) {
-            return "redirect:/users/login";
+        String profilePictureUrl = null;
+
+        if (currentUser.getProfilePicturePath() != null && !currentUser.getProfilePicturePath().isBlank()) {
+            profilePictureUrl = "https://ktsfrevxaxezsmyuuier.supabase.co/storage/v1/object/public/uploads/" + currentUser.getProfilePicturePath();
         }
+        model.addAttribute("userUpdateDto", dto);
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("user", currentUser);
+        model.addAttribute("profilePictureUrl", profilePictureUrl);
+
         return "ProfileView";
     }
 
@@ -258,15 +254,13 @@ public class UserMvcController {
             HttpSession session,
             RedirectAttributes redirectAttributes) throws IOException {
 
-        try {
-            User currentUser = authenticationHelper.getCurrentUser(session);
-            String picturePath = supabaseStorageService.uploadFile(picture, currentUser.getId());
-            currentUser.setProfilePicturePath(picturePath);
-            userService.update(currentUser);
-            session.setAttribute("currentUser", currentUser);
-        } catch (ResponseStatusException e) {
-            return "redirect:/users/login";
-        }
+
+        User currentUser = authenticationHelper.getCurrentUser(session);
+        String picturePath = supabaseStorageService.uploadFile(picture, currentUser.getId());
+        currentUser.setProfilePicturePath(picturePath);
+        userService.update(currentUser);
+        session.setAttribute("currentUser", currentUser);
+
 
         redirectAttributes.addFlashAttribute(
                 "successMessage",
