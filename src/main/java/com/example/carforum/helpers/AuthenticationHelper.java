@@ -22,7 +22,7 @@ public class AuthenticationHelper {
     public User getCurrentUser(HttpSession session) {
         User userFromSession = (User) session.getAttribute("currentUser");
         if (userFromSession == null) {
-            throw new AuthenticationException(USER_NOT_LOGGED_IN_MESSAGE);
+            throw new AuthorizationException(USER_NOT_LOGGED_IN_MESSAGE);
         }
         String password = userFromSession.getPassword();
         String username = userFromSession.getUsername();
