@@ -7,6 +7,9 @@ import com.example.carforum.helpers.ModelMapper;
 import com.example.carforum.models.*;
 import com.example.carforum.services.LikeService;
 import com.example.carforum.services.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+@Tag(name = "Manage posts", description = "CRUD operations for Posts")
 public class PostRestController {
     private static final String USER_BLOCKED_MESSAGE = "Your user is blocked by the admin, you cannot create/update/delete posts.";
     private final PostService postService;
@@ -33,6 +37,8 @@ public class PostRestController {
         this.authenticationHelper = authenticationHelper;
     }
 
+    @Operation(summary = "Returns all users. Filter, sorting and ordering is available.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping()
     public List<Post> getAll(@RequestParam(required = false) String title,
                              @RequestParam(required = false) String username,
@@ -47,6 +53,8 @@ public class PostRestController {
         return postService.getAll(filterOptions);
     }
 
+    @Operation(summary = "Returns a Post by its Id.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping("/{id}")
     public Post getById(@PathVariable int id, HttpSession session) {
         authenticationHelper.getCurrentUser(session);
@@ -57,6 +65,8 @@ public class PostRestController {
         }
     }
 
+    @Operation(summary = "Creates a Post.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping()
     public void create(@Valid @RequestBody PostDto postDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
@@ -69,6 +79,8 @@ public class PostRestController {
         postService.create(post);
     }
 
+    @Operation(summary = "Updates a Post. Id required for searching the Post.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PutMapping("/{id}")
     public void update(@PathVariable int id, @Valid @RequestBody PostDto postDto, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
@@ -85,6 +97,8 @@ public class PostRestController {
         }
     }
 
+    @Operation(summary = "Deletes a Post by its Id.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id, HttpSession session) {
         User user = authenticationHelper.getCurrentUser(session);
@@ -100,6 +114,8 @@ public class PostRestController {
         }
     }
 
+    @Operation(summary = "Returns the count of likes of a Post.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @GetMapping("/{postId}/likes")
     public int getPostLikesCount(@PathVariable int postId){
         try {
@@ -109,6 +125,8 @@ public class PostRestController {
         }
     }
 
+    @Operation(summary = "Creates a like for a Post.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @PostMapping("/{postId}/likes")
     public void crateLike(@PathVariable int postId, HttpSession session){
 
@@ -121,6 +139,9 @@ public class PostRestController {
         }
 
     }
+
+    @Operation(summary = "Deletes a like for Post.")
+    @ApiResponse(responseCode = "200", description = "Successes")
     @DeleteMapping("/{postId}/likes")
     public void deleteLike(@PathVariable int postId, HttpSession session){
 
