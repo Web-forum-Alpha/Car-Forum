@@ -10,9 +10,7 @@ A full-stack automotive discussion forum built with Spring Boot. The application
 - Session-based authentication
 - User profile viewing and editing
 - Profile picture uploads to Supabase Storage
-- Search by username, email, or first name
 - Administrator access to user management
-- Block and unblock user accounts
 
 ### Forum
 
@@ -22,8 +20,7 @@ A full-stack automotive discussion forum built with Spring Boot. The application
 - Like and unlike posts
 - Filter posts by title, author, number of likes, or number of comments
 - Sort filtered results
-- Home page with forum statistics, recent posts, and most-commented posts
-- Ownership and role-based authorization for protected actions
+- Home page with recent posts, and most-commented posts
 
 ### Validation and error handling
 
@@ -135,7 +132,7 @@ Open [http://localhost:8080](http://localhost:8080).
 
 ## REST API
 
-Authentication is session-based. After a successful login, API clients must preserve and resend the `JSESSIONID` cookie.
+Swagger - http://localhost:8080/swagger-ui/index.html
 
 ### Users — `/api/users`
 
